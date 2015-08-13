@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>易用的深度学习框架Keras简介 | wepon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="之前我一直在使用Theano，前面五篇Deeplearning相关的文章也是学习Theano的一些笔记，当时已经觉得Theano用起来略显麻烦，有时想实现一个新的结构，就要花很多时间去编程，所以想过将代码模块化，方便重复使用，但因为实在太忙没有时间去做。最近发现了一个叫做Keras的框架，跟我的想法不谋而合，用起来特别简单，适合快速开发。
+1. Keras简介Keras是基于Theano的一个深度">
+<meta property="og:type" content="article">
+<meta property="og:title" content="易用的深度学习框架Keras简介">
+<meta property="og:url" content="http://2hwp.com/2015/04/30/DeepLearning tutorial（6）易用的深度学习框架Keras简介/index.html">
+<meta property="og:site_name" content="wepon">
+<meta property="og:description" content="之前我一直在使用Theano，前面五篇Deeplearning相关的文章也是学习Theano的一些笔记，当时已经觉得Theano用起来略显麻烦，有时想实现一个新的结构，就要花很多时间去编程，所以想过将代码模块化，方便重复使用，但因为实在太忙没有时间去做。最近发现了一个叫做Keras的框架，跟我的想法不谋而合，用起来特别简单，适合快速开发。
+1. Keras简介Keras是基于Theano的一个深度">
+<meta property="og:image" content="http://img.blog.csdn.net/20150430170244640">
+<meta property="og:updated_time" content="2015-08-06T10:50:54.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="易用的深度学习框架Keras简介">
+<meta name="twitter:description" content="之前我一直在使用Theano，前面五篇Deeplearning相关的文章也是学习Theano的一些笔记，当时已经觉得Theano用起来略显麻烦，有时想实现一个新的结构，就要花很多时间去编程，所以想过将代码模块化，方便重复使用，但因为实在太忙没有时间去做。最近发现了一个叫做Keras的框架，跟我的想法不谋而合，用起来特别简单，适合快速开发。
+1. Keras简介Keras是基于Theano的一个深度">
+  
+    <link rel="alternative" href="/atom.xml" title="wepon" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">wepon</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/categories/机器学习">机器学习</a></li>
+				        
+							<li><a href="/categories/深度学习">深度学习</a></li>
+				        
+							<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+				        
+							<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="mail" target="_blank" href="/" title="mail">mail</a>
+					        
+								<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+					        
+								<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2-regularization/" style="font-size: 10px;">L2 regularization</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/dropout/" style="font-size: 10px;">dropout</a> <a href="/tags/kaggle/" style="font-size: 10px;">kaggle</a> <a href="/tags/keras/" style="font-size: 20px;">keras</a> <a href="/tags/liblinear/" style="font-size: 10px;">liblinear</a> <a href="/tags/libsvm/" style="font-size: 10px;">libsvm</a> <a href="/tags/minibatch-size/" style="font-size: 10px;">minibatch size</a> <a href="/tags/theano/" style="font-size: 20px;">theano</a> <a href="/tags/人脸检测/" style="font-size: 10px;">人脸检测</a> <a href="/tags/可视化/" style="font-size: 10px;">可视化</a> <a href="/tags/学习速率/" style="font-size: 10px;">学习速率</a> <a href="/tags/正则化/" style="font-size: 10px;">正则化</a> <a href="/tags/正则项系数/" style="font-size: 10px;">正则项系数</a> <a href="/tags/流形学习/" style="font-size: 10px;">流形学习</a> <a href="/tags/降维/" style="font-size: 10px;">降维</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">wepon</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">wepon</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/categories/机器学习">机器学习</a></li>
+		        
+					<li><a href="/categories/深度学习">深度学习</a></li>
+		        
+					<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+		        
+					<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="mail" target="_blank" href="/" title="mail">mail</a>
+			        
+						<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+			        
+						<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-DeepLearning tutorial（6）易用的深度学习框架Keras简介" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/04/30/DeepLearning tutorial（6）易用的深度学习框架Keras简介/" class="article-date">
+  	<time datetime="2015-04-29T16:00:00.000Z" itemprop="datePublished">2015-04-30</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      易用的深度学习框架Keras简介
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/keras/">keras</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theano/">theano</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/深度学习/">深度学习</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前我一直在使用Theano，前面五篇Deeplearning相关的文章也是学习Theano的一些笔记，当时已经觉得Theano用起来略显麻烦，有时想实现一个新的结构，就要花很多时间去编程，所以想过将代码模块化，方便重复使用，但因为实在太忙没有时间去做。最近发现了一个叫做Keras的框架，跟我的想法不谋而合，用起来特别简单，适合快速开发。</p>
+<h2 id="1-_Keras简介"><strong>1. Keras简介</strong></h2><p>Keras是基于Theano的一个深度学习框架，它的设计参考了Torch，用Python语言编写，是一个高度模块化的神经网络库，支持GPU和CPU。使用文档在这：<a href="http://keras.io/，这个框架貌似是刚刚火起来的，使用上的问题可以到github提issue:https://github.com/fchollet/keras" target="_blank" rel="external">http://keras.io/，这个框架貌似是刚刚火起来的，使用上的问题可以到github提issue:https://github.com/fchollet/keras</a>　</p>
+<p>下面简单介绍一下怎么使用Keras，以Mnist数据库为例,编写一个CNN网络结构，你将会发现特别简单。</p>
+<h2 id="2-_Keras里的模块介绍"><strong>2. Keras里的模块介绍</strong></h2><ul>
+<li><p><strong>Optimizers</strong></p>
+<p>  顾名思义，Optimizers包含了一些优化的方法，比如最基本的随机梯度下降SGD,另外还有Adagrad、Adadelta、RMSprop、Adam，一些新的方法以后也会被不断添加进来。</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keras.optimizers.SGD(lr=<span class="number">0.01</span>, momentum=<span class="number">0.9</span>, decay=<span class="number">0.9</span>, nesterov=False)</span><br></pre></td></tr></table></figure>
+<p>  上面的代码是SGD的使用方法，lr表示学习速率,momentum表示动量项，decay是学习速率的衰减系数(每个epoch衰减一次),Nesterov的值是False或者True，表示使不使用Nesterov momentum。其他的请参考文档。</p>
+</li>
+<li><p><strong>Objectives</strong></p>
+<p>  这是目标函数模块，keras提供了mean_squared_error，mean_absolute_error<br>  ，squared_hinge，hinge，binary_crossentropy，categorical_crossentropy这几种目标函数。</p>
+<p>  这里binary_crossentropy 和 categorical_crossentropy也就是常说的logloss.</p>
+</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li><p><strong>Activations</strong></p>
+<p>  这是激活函数模块，keras提供了linear、sigmoid、hard_sigmoid、tanh、softplus、relu、softplus，另外softmax也放在Activations模块里(我觉得放在layers模块里更合理些）。此外，像LeakyReLU和PReLU这种比较新的激活函数，keras在keras.layers.advanced_activations模块里提供。</p>
+</li>
+<li><p><strong>Initializations</strong></p>
+<p>  这是参数初始化模块，在添加layer的时候调用init进行初始化。keras提供了uniform、lecun_uniform、normal、orthogonal、zero、glorot_normal、he_normal这几种。    </p>
+</li>
+<li><p><strong>layers</strong></p>
+<p>  layers模块包含了core、convolutional、recurrent、advanced_activations、normalization、embeddings这几种layer。</p>
+<p>  其中core里面包含了flatten(CNN的全连接层之前需要把二维特征图flatten成为一维的)、reshape（CNN输入时将一维的向量弄成二维的）、dense(就是隐藏层，dense是稠密的意思),还有其他的就不介绍了。convolutional层基本就是Theano的Convolution2D的封装。</p>
+</li>
+</ul>
+<ul>
+<li><p><strong>Preprocessing</strong></p>
+<p>  这是预处理模块，包括序列数据的处理，文本数据的处理，图像数据的处理。重点看一下图像数据的处理，keras提供了ImageDataGenerator函数,实现data augmentation，数据集扩增，对图像做一些弹性变换，比如水平翻转，垂直翻转，旋转等。</p>
+</li>
+<li><p><strong>Models</strong></p>
+<p>  这是最主要的模块，模型。上面定义了各种基本组件，model是将它们组合起来，下面通过一个实例来说明。</p>
+</li>
+</ul>
+<h2 id="3-一个实例：用CNN分类Mnist"><strong>3.一个实例：用CNN分类Mnist</strong></h2><ul>
+<li><p><strong>数据下载</strong></p>
+<p>  Mnist数据在其官网上有提供，但是不是图像格式的，因为我们通常都是直接处理图像，为了以后程序能复用，我把它弄成图像格式的，这里可以下载：<a href="http://pan.baidu.com/s/1qCdS6" target="_blank" rel="external">http://pan.baidu.com/s/1qCdS6</a>，共有42000张图片。</p>
+</li>
+<li><p><strong>读取图片数据</strong></p>
+<p>  keras要求输入的数据格式是numpy.array类型（numpy是一个python的数值计算的库），所以需要写一个脚本来读入mnist图像，保存为一个四维的data，还有一个一维的label，代码：</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"><span class="string">"""</span><br><span class="line">Author:wepon</span><br><span class="line">Source:https://github.com/wepe</span><br><span class="line">file:data.py</span><br><span class="line">"""</span></span><br><span class="line">		</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">		</span><br><span class="line"><span class="comment">#读取文件夹mnist下的42000张图片，图片为灰度图，所以为1通道，</span></span><br><span class="line"><span class="comment">#如果是将彩色图作为输入,则将1替换为3，并且data[i,:,:,:] = arr改为data[i,:,:,:] = [arr[:,:,0],arr[:,:,1],arr[:,:,2]]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">load_data</span><span class="params">()</span>:</span></span><br><span class="line">	data = np.empty((<span class="number">42000</span>,<span class="number">1</span>,<span class="number">28</span>,<span class="number">28</span>),dtype=<span class="string">"float32"</span>)</span><br><span class="line">	label = np.empty((<span class="number">42000</span>,),dtype=<span class="string">"uint8"</span>)</span><br><span class="line">		</span><br><span class="line">	imgs = os.listdir(<span class="string">"./mnist"</span>)</span><br><span class="line">	num = len(imgs)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(num):</span><br><span class="line">		img = Image.open(<span class="string">"./mnist/"</span>+imgs[i])</span><br><span class="line">		arr = np.asarray(img,dtype=<span class="string">"float32"</span>)</span><br><span class="line">		data[i,:,:,:] = arr</span><br><span class="line">		label[i] = int(imgs[i].split(<span class="string">'.'</span>)[<span class="number">0</span>])</span><br><span class="line">	<span class="keyword">return</span> data,label</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>构建CNN，训练</p>
+<p>  短短二十多行代码，构建一个三个卷积层的CNN，直接读下面的代码吧，有注释，很容易读懂：</p>
+</li>
+</ul>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#导入各种用到的模块组件</span></span><br><span class="line">from __future__ import absolute_import</span><br><span class="line">from __future__ import print_function</span><br><span class="line">from keras.preprocessing.image import ImageDataGenerator</span><br><span class="line">from keras.models import Sequential</span><br><span class="line">from keras.layers.core import Dense, Dropout, Activation, Flatten</span><br><span class="line">from keras.layers.advanced_activations import PReLU</span><br><span class="line">from keras.layers.convolutional import Convolution2D, MaxPooling2D</span><br><span class="line">from keras.optimizers import SGD, Adadelta, Adagrad</span><br><span class="line">from keras.utils import np_utils, generic_utils</span><br><span class="line">from six.moves import range</span><br><span class="line">from data import load_data</span><br><span class="line">		</span><br><span class="line"><span class="preprocessor">#加载数据</span></span><br><span class="line">data, label = load_data()</span><br><span class="line">print(data.shape[<span class="number">0</span>], <span class="string">' samples'</span>)</span><br><span class="line">		</span><br><span class="line"><span class="preprocessor">#label为0~9共10个类别，keras要求格式为binary class matrices,转化一下，直接调用keras提供的这个函数</span></span><br><span class="line">label = np_utils.to_categorical(label, <span class="number">10</span>)</span><br><span class="line">		</span><br><span class="line"><span class="preprocessor">###############</span></span><br><span class="line"><span class="preprocessor">#开始建立CNN模型</span></span><br><span class="line"><span class="preprocessor">###############</span></span><br><span class="line">		</span><br><span class="line"><span class="preprocessor">#生成一个model</span></span><br><span class="line">model = Sequential()</span><br><span class="line">		</span><br><span class="line"><span class="preprocessor">#第一个卷积层，4个卷积核，每个卷积核大小5*5。1表示输入的图片的通道,灰度图为1通道。</span></span><br><span class="line"><span class="preprocessor">#border_mode可以是valid或者full，具体看这里说明：http://deeplearning.net/software/theano/library/tensor/nnet/conv.html#theano.tensor.nnet.conv.conv2d</span></span><br><span class="line"><span class="preprocessor">#激活函数用tanh</span></span><br><span class="line"><span class="preprocessor">#你还可以在model.add(Activation('tanh'))后加上dropout的技巧: model.add(Dropout(0.5))</span></span><br><span class="line">model.add(Convolution2D(<span class="number">4</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">5</span>, border_mode=<span class="string">'valid'</span>)) </span><br><span class="line">model.add(Activation(<span class="string">'tanh'</span>))</span><br><span class="line">		</span><br><span class="line"><span class="preprocessor">#第二个卷积层，8个卷积核，每个卷积核大小3*3。4表示输入的特征图个数，等于上一层的卷积核个数</span></span><br><span class="line"><span class="preprocessor">#激活函数用tanh</span></span><br><span class="line"><span class="preprocessor">#采用maxpooling，poolsize为(2,2)</span></span><br><span class="line">model.add(Convolution2D(<span class="number">8</span>,<span class="number">4</span>, <span class="number">3</span>, <span class="number">3</span>, border_mode=<span class="string">'valid'</span>))</span><br><span class="line">model.add(Activation(<span class="string">'tanh'</span>))</span><br><span class="line">model.add(MaxPooling2D(poolsize=(<span class="number">2</span>, <span class="number">2</span>)))</span><br><span class="line">		</span><br><span class="line"><span class="preprocessor">#第三个卷积层，16个卷积核，每个卷积核大小3*3</span></span><br><span class="line"><span class="preprocessor">#激活函数用tanh</span></span><br><span class="line"><span class="preprocessor">#采用maxpooling，poolsize为(2,2)</span></span><br><span class="line">model.add(Convolution2D(<span class="number">16</span>, <span class="number">8</span>, <span class="number">3</span>, <span class="number">3</span>, border_mode=<span class="string">'valid'</span>)) </span><br><span class="line">model.add(Activation(<span class="string">'tanh'</span>))</span><br><span class="line">model.add(MaxPooling2D(poolsize=(<span class="number">2</span>, <span class="number">2</span>)))</span><br><span class="line">		</span><br><span class="line"><span class="preprocessor">#全连接层，先将前一层输出的二维特征图flatten为一维的。</span></span><br><span class="line"><span class="preprocessor">#Dense就是隐藏层。16就是上一层输出的特征图个数。4是根据每个卷积层计算出来的：(28-5+1)得到24,(24-3+1)/2得到11，(11-3+1)/2得到4</span></span><br><span class="line"><span class="preprocessor">#全连接有128个神经元节点,初始化方式为normal</span></span><br><span class="line">model.add(Flatten())</span><br><span class="line">model.add(Dense(<span class="number">16</span>*<span class="number">4</span>*<span class="number">4</span>, <span class="number">128</span>, init=<span class="string">'normal'</span>))</span><br><span class="line">model.add(Activation(<span class="string">'tanh'</span>))</span><br><span class="line">		</span><br><span class="line"><span class="preprocessor">#Softmax分类，输出是10类别</span></span><br><span class="line">model.add(Dense(<span class="number">128</span>, <span class="number">10</span>, init=<span class="string">'normal'</span>))</span><br><span class="line">model.add(Activation(<span class="string">'softmax'</span>))</span><br><span class="line">		</span><br><span class="line"><span class="preprocessor">#############</span></span><br><span class="line"><span class="preprocessor">#开始训练模型</span></span><br><span class="line"><span class="preprocessor">##############</span></span><br><span class="line"><span class="preprocessor">#使用SGD + momentum</span></span><br><span class="line"><span class="preprocessor">#model.compile里的参数loss就是损失函数(目标函数)</span></span><br><span class="line">sgd = SGD(l2=<span class="number">0.0</span>,lr=<span class="number">0.05</span>, decay=<span class="number">1e-6</span>, momentum=<span class="number">0.9</span>, nesterov=True)</span><br><span class="line">model.compile(loss=<span class="string">'categorical_crossentropy'</span>, optimizer=sgd,class_mode=<span class="string">"categorical"</span>)</span><br><span class="line">		</span><br><span class="line"><span class="preprocessor">#调用fit方法，就是一个训练过程. 训练的epoch数设为10，batch_size为100．</span></span><br><span class="line"><span class="preprocessor">#数据经过随机打乱shuffle=True。verbose=1，训练过程中输出的信息，0、1、2三种方式都可以，无关紧要。show_accuracy=True，训练时每一个epoch都输出accuracy。</span></span><br><span class="line"><span class="preprocessor">#validation_split=0.2，将20%的数据作为验证集。</span></span><br><span class="line">model.fit(data, label, batch_size=<span class="number">100</span>,nb_epoch=<span class="number">10</span>,shuffle=True,verbose=<span class="number">1</span>,show_accuracy=True,validation_split=<span class="number">0.2</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>代码使用与结果</strong></li>
+</ul>
+<p>代码放在我github的机器学习仓库里：<a href="https://github.com/wepe/MachineLearning" target="_blank" rel="external">https://github.com/wepe/MachineLearning</a>,非github用户直接点右下的DownloadZip。</p>
+<p>在/DeepLearning Tutorials/keras_usage目录下包括<code>data.py</code>,<code>cnn.py</code>两份代码，下载Mnist数据后解压到该目录下，运行<code>cnn.py</code>这份文件即可。</p>
+<p>结果如下所示，在Epoch 9达到了0.98的训练集识别率和0.97的验证集识别率：</p>
+<p><img src="http://img.blog.csdn.net/20150430170244640" alt="这里写图片描述"></p>
+<hr>
+<p>转载请注明出处：<a href="http://blog.csdn.net/u012162613/article/details/45397033" target="_blank" rel="external">http://blog.csdn.net/u012162613/article/details/45397033</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/05/08/DeepLearning tutorial（7）深度学习框架Keras的使用-进阶/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          深度学习框架Keras的使用-进阶
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/04/22/libsvm和liblinear的使用总结/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">libsvm和liblinear的使用总结</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="DeepLearning tutorial（6）易用的深度学习框架Keras简介" data-title="易用的深度学习框架Keras简介" data-url="http://2hwp.com/2015/04/30/DeepLearning tutorial（6）易用的深度学习框架Keras简介/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 wepon
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

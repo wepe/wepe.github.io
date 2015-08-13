@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>交叉熵代价函数 | wepon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文是《Neural networks and deep learning》概览 中第三章的一部分，讲machine learning算法中用得很多的交叉熵代价函数。
+1.从方差代价函数说起代价函数经常用方差代价函数（即采用均方误差MSE），比如对于一个神经元（单输入单输出，sigmoid函数）,定义其代价函数为：
+ 
+其中y是我们期望的输出，a为神经元的实际输出【 a=σ(z), where z">
+<meta property="og:type" content="article">
+<meta property="og:title" content="交叉熵代价函数">
+<meta property="og:url" content="http://2hwp.com/2015/03/13/交叉熵代价函数/index.html">
+<meta property="og:site_name" content="wepon">
+<meta property="og:description" content="本文是《Neural networks and deep learning》概览 中第三章的一部分，讲machine learning算法中用得很多的交叉熵代价函数。
+1.从方差代价函数说起代价函数经常用方差代价函数（即采用均方误差MSE），比如对于一个神经元（单输入单输出，sigmoid函数）,定义其代价函数为：
+ 
+其中y是我们期望的输出，a为神经元的实际输出【 a=σ(z), where z">
+<meta property="og:image" content="http://i.imgur.com/D4n2Dsz.jpg">
+<meta property="og:image" content="http://i.imgur.com/bTVarWP.jpg">
+<meta property="og:image" content="http://i.imgur.com/TVWKd7e.jpg">
+<meta property="og:image" content="http://i.imgur.com/Rjvy4vp.jpg">
+<meta property="og:image" content="http://i.imgur.com/LCXi3QA.jpg">
+<meta property="og:image" content="http://i.imgur.com/hMf3zC1.jpg">
+<meta property="og:updated_time" content="2015-08-06T10:45:09.502Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="交叉熵代价函数">
+<meta name="twitter:description" content="本文是《Neural networks and deep learning》概览 中第三章的一部分，讲machine learning算法中用得很多的交叉熵代价函数。
+1.从方差代价函数说起代价函数经常用方差代价函数（即采用均方误差MSE），比如对于一个神经元（单输入单输出，sigmoid函数）,定义其代价函数为：
+ 
+其中y是我们期望的输出，a为神经元的实际输出【 a=σ(z), where z">
+  
+    <link rel="alternative" href="/atom.xml" title="wepon" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">wepon</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/categories/机器学习">机器学习</a></li>
+				        
+							<li><a href="/categories/深度学习">深度学习</a></li>
+				        
+							<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+				        
+							<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="mail" target="_blank" href="/" title="mail">mail</a>
+					        
+								<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+					        
+								<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2-regularization/" style="font-size: 10px;">L2 regularization</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/dropout/" style="font-size: 10px;">dropout</a> <a href="/tags/kaggle/" style="font-size: 10px;">kaggle</a> <a href="/tags/keras/" style="font-size: 20px;">keras</a> <a href="/tags/liblinear/" style="font-size: 10px;">liblinear</a> <a href="/tags/libsvm/" style="font-size: 10px;">libsvm</a> <a href="/tags/minibatch-size/" style="font-size: 10px;">minibatch size</a> <a href="/tags/theano/" style="font-size: 20px;">theano</a> <a href="/tags/人脸检测/" style="font-size: 10px;">人脸检测</a> <a href="/tags/可视化/" style="font-size: 10px;">可视化</a> <a href="/tags/学习速率/" style="font-size: 10px;">学习速率</a> <a href="/tags/正则化/" style="font-size: 10px;">正则化</a> <a href="/tags/正则项系数/" style="font-size: 10px;">正则项系数</a> <a href="/tags/流形学习/" style="font-size: 10px;">流形学习</a> <a href="/tags/降维/" style="font-size: 10px;">降维</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">wepon</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">wepon</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/categories/机器学习">机器学习</a></li>
+		        
+					<li><a href="/categories/深度学习">深度学习</a></li>
+		        
+					<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+		        
+					<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="mail" target="_blank" href="/" title="mail">mail</a>
+			        
+						<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+			        
+						<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-交叉熵代价函数" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/03/13/交叉熵代价函数/" class="article-date">
+  	<time datetime="2015-03-12T16:00:00.000Z" itemprop="datePublished">2015-03-13</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      交叉熵代价函数
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/机器学习/">机器学习</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文是<a href="http://blog.csdn.net/u012162613/article/details/44220115" target="_blank" rel="external">《Neural networks and deep learning》概览</a> 中第三章的一部分，讲machine learning算法中用得很多的交叉熵代价函数。</p>
+<h2 id="1-从方差代价函数说起"><strong>1.从方差代价函数说起</strong></h2><p>代价函数经常用方差代价函数（即采用均方误差MSE），比如对于一个神经元（单输入单输出，sigmoid函数）,定义其代价函数为：</p>
+<p><img src="http://i.imgur.com/D4n2Dsz.jpg" alt=""> </p>
+<p>其中y是我们期望的输出，a为神经元的实际输出【 a=σ(z), where z=wx+b 】。</p>
+<p>在训练神经网络过程中，我们通过梯度下降算法来更新w和b，因此需要计算代价函数对w和b的导数：</p>
+<p><img src="http://i.imgur.com/bTVarWP.jpg" alt=""></p>
+<p>然后更新w、b：</p>
+<p>w &lt;—— w - η<em> ∂C/∂w = w - η </em> a *σ′(z)</p>
+<p>b &lt;—— b - η<em> ∂C/∂b = b - η </em> a * σ′(z)</p>
+<p>因为sigmoid函数的性质，导致σ′(z)在z取大部分值时会很小（如下图标出来的两端，几近于平坦），这样会使得w和b更新非常慢（因为η <em> a </em> σ′(z)这一项接近于0）。</p>
+<p><img src="http://i.imgur.com/TVWKd7e.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="2-交叉熵代价函数（cross-entropy_cost_function）"><strong>2.交叉熵代价函数（cross-entropy cost function）</strong></h2><p>为了克服这个缺点，引入了交叉熵代价函数（下面的公式对应一个神经元，多输入单输出）：</p>
+<p><img src="http://i.imgur.com/Rjvy4vp.jpg" alt=""></p>
+<p>其中y为期望的输出，a为神经元实际输出【a=σ(z), where z=∑Wj*Xj+b】</p>
+<p>与方差代价函数一样，交叉熵代价函数同样有<strong>两个性质</strong>：</p>
+<ul>
+<li>非负性。（所以我们的目标就是最小化代价函数）</li>
+<li>当真实输出a与期望输出y接近的时候，代价函数接近于0.(比如y=0，a～0；y=1，a~1时，代价函数都接近0)。</li>
+</ul>
+<p>另外，它可以克服方差代价函数更新权重过慢的问题。我们同样看看它的导数：</p>
+<p><img src="http://i.imgur.com/LCXi3QA.jpg" alt=""></p>
+<p><img src="http://i.imgur.com/hMf3zC1.jpg" alt=""></p>
+<p>可以看到，导数中没有σ′(z)这一项，权重的更新是受σ(z)−y这一项影响，即受误差的影响。所以当误差大的时候，权重更新就快，当误差小的时候，权重的更新就慢。这是一个很好的性质。</p>
+<h2 id="3-总结"><strong>3.总结</strong></h2><ul>
+<li><p>当我们用sigmoid函数作为神经元的激活函数时，最好使用交叉熵代价函数来替代方差代价函数，以避免训练过程太慢。</p>
+</li>
+<li><p>不过，你也许会问，为什么是交叉熵函数？导数中不带σ′(z)项的函数有无数种，怎么就想到用交叉熵函数？这自然是有来头的，更深入的讨论就不写了，少年请自行了解。</p>
+</li>
+<li><p>另外，交叉熵函数的形式是−[ylna+(1−y)ln(1−a)]而不是 −[alny+(1−a)ln(1−y)]，为什么？因为当期望输出的y=0时，lny没有意义；当期望y=1时，ln(1-y)没有意义。而因为a是sigmoid函数的实际输出，永远不会等于0或1，只会无限接近于0或者1，因此不存在这个问题。</p>
+</li>
+</ul>
+<h2 id="4-还要说说：log-likelihood_cost"><strong>4.还要说说：log-likelihood cost</strong></h2><p>对数似然函数也常用来作为softmax回归的代价函数，在上面的讨论中，我们最后一层（也就是输出）是通过sigmoid函数，因此采用了交叉熵代价函数。而深度学习中更普遍的做法是将softmax作为最后一层，此时常用的是代价函数是log-likelihood cost。</p>
+<blockquote>
+<p>In fact, it’s useful to think of a softmax output layer with log-likelihood cost as being quite similar to a sigmoid output layer with cross-entropy cost。</p>
+</blockquote>
+<p>其实这两者是一致的，logistic回归用的就是sigmoid函数，softmax回归是logistic回归的多类别推广。log-likelihood代价函数在二类别时就可以化简为交叉熵代价函数的形式。具体可以参考<a href="http://deeplearning.stanford.edu/wiki/index.php/Softmax%E5%9B%9E%E5%BD%92" target="_blank" rel="external">UFLDL教程</a></p>
+<hr>
+<p>转载请注明出处：<a href="http://blog.csdn.net/u012162613/article/details/44239919" target="_blank" rel="external">http://blog.csdn.net/u012162613/article/details/44239919</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/03/14/正则化方法：L1和L2 regularization、数据集扩增、dropout/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          正则化方法：L1和L2 regularization、数据集扩增、dropout
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/03/05/OpenCV人脸检测（C++代码）/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">OpenCV人脸检测（C++代码）</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="交叉熵代价函数" data-title="交叉熵代价函数" data-url="http://2hwp.com/2015/03/13/交叉熵代价函数/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 wepon
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

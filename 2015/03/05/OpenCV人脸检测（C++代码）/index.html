@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>OpenCV人脸检测（C++代码） | wepon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这篇文章简单总结一下人脸检测的代码实现，基于OpenCV，C++版本。之所以强调C++版本是因为OpenCV有很多其他语言的接口，之前我也写过人脸检测的Python实现《Python-OpenCV人脸检测(代码)》，这篇文章则讲C++实现，其实大同小异，C++相比于Python实现代码写起来会繁琐一点，这也是语言本身决定的吧。
+为了保持代码风格一致，C++实现与之前的Python实现一样，都将人脸">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenCV人脸检测（C++代码）">
+<meta property="og:url" content="http://2hwp.com/2015/03/05/OpenCV人脸检测（C++代码）/index.html">
+<meta property="og:site_name" content="wepon">
+<meta property="og:description" content="这篇文章简单总结一下人脸检测的代码实现，基于OpenCV，C++版本。之所以强调C++版本是因为OpenCV有很多其他语言的接口，之前我也写过人脸检测的Python实现《Python-OpenCV人脸检测(代码)》，这篇文章则讲C++实现，其实大同小异，C++相比于Python实现代码写起来会繁琐一点，这也是语言本身决定的吧。
+为了保持代码风格一致，C++实现与之前的Python实现一样，都将人脸">
+<meta property="og:image" content="http://i.imgur.com/dIWW0X1.jpg">
+<meta property="og:image" content="http://i.imgur.com/TzUF9sz.jpg">
+<meta property="og:image" content="http://i.imgur.com/Izdfi2g.jpg">
+<meta property="og:updated_time" content="2015-08-06T10:53:55.355Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenCV人脸检测（C++代码）">
+<meta name="twitter:description" content="这篇文章简单总结一下人脸检测的代码实现，基于OpenCV，C++版本。之所以强调C++版本是因为OpenCV有很多其他语言的接口，之前我也写过人脸检测的Python实现《Python-OpenCV人脸检测(代码)》，这篇文章则讲C++实现，其实大同小异，C++相比于Python实现代码写起来会繁琐一点，这也是语言本身决定的吧。
+为了保持代码风格一致，C++实现与之前的Python实现一样，都将人脸">
+  
+    <link rel="alternative" href="/atom.xml" title="wepon" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">wepon</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/categories/机器学习">机器学习</a></li>
+				        
+							<li><a href="/categories/深度学习">深度学习</a></li>
+				        
+							<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+				        
+							<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="mail" target="_blank" href="/" title="mail">mail</a>
+					        
+								<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+					        
+								<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2-regularization/" style="font-size: 10px;">L2 regularization</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/dropout/" style="font-size: 10px;">dropout</a> <a href="/tags/kaggle/" style="font-size: 10px;">kaggle</a> <a href="/tags/keras/" style="font-size: 20px;">keras</a> <a href="/tags/liblinear/" style="font-size: 10px;">liblinear</a> <a href="/tags/libsvm/" style="font-size: 10px;">libsvm</a> <a href="/tags/minibatch-size/" style="font-size: 10px;">minibatch size</a> <a href="/tags/theano/" style="font-size: 20px;">theano</a> <a href="/tags/人脸检测/" style="font-size: 10px;">人脸检测</a> <a href="/tags/可视化/" style="font-size: 10px;">可视化</a> <a href="/tags/学习速率/" style="font-size: 10px;">学习速率</a> <a href="/tags/正则化/" style="font-size: 10px;">正则化</a> <a href="/tags/正则项系数/" style="font-size: 10px;">正则项系数</a> <a href="/tags/流形学习/" style="font-size: 10px;">流形学习</a> <a href="/tags/降维/" style="font-size: 10px;">降维</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">wepon</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">wepon</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/categories/机器学习">机器学习</a></li>
+		        
+					<li><a href="/categories/深度学习">深度学习</a></li>
+		        
+					<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+		        
+					<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="mail" target="_blank" href="/" title="mail">mail</a>
+			        
+						<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+			        
+						<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-OpenCV人脸检测（C++代码）" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/03/05/OpenCV人脸检测（C++代码）/" class="article-date">
+  	<time datetime="2015-03-05T11:07:43.000Z" itemprop="datePublished">2015-03-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      OpenCV人脸检测（C++代码）
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/人脸检测/">人脸检测</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/计算机视觉/">计算机视觉</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这篇文章简单总结一下人脸检测的代码实现，基于OpenCV，C++版本。之所以强调C++版本是因为OpenCV有很多其他语言的接口，之前我也写过人脸检测的Python实现<a href="http://blog.csdn.net/u012162613/article/details/43523507" target="_blank" rel="external">《Python-OpenCV人脸检测(代码)》</a>，这篇文章则讲C++实现，其实大同小异，C++相比于Python实现代码写起来会繁琐一点，这也是语言本身决定的吧。</p>
+<p>为了保持代码风格一致，C++实现与之前的Python实现一样，都将人脸检测、眼睛检测、框出人脸、框出眼睛、截取保存人脸各个功能封装为函数，方便移植。</p>
+<hr>
+<h2 id="1、OpenCV中人脸检测采用的算法"><strong>1、OpenCV中人脸检测采用的算法</strong></h2><p>在安装OpenCV的路径中（window系统），我们可以发现”…\opencv\sources\data”目录下有如下三个文件夹：</p>
+<p><img src="http://i.imgur.com/dIWW0X1.jpg" alt=""></p>
+<p>这正是OpenCV采用的算法。haarcascades文件下存放的是采用Haar特征的级联分类器（Cascade Classfier），hogcascades下存放采用HOG特征（梯度方向直方图）的级联分类器，lbpcascades下存放的是采用LBP特征的级联分类器。关于图像的Haar、LBP、HOG、SIFT等特征我将写另外的博文进行总结，这里就不详细展开。图中三个文件夹下存放了很多xml文件，这些是预先训练好的特征，用于构造分类器的，有人脸检测的、眼睛检测的、smile检测的、行人检测的等等。</p>
+<p>在这篇文章中，仅以haarcascas下的”haarcascade_frontalface_alt.xml”和”haarcascade_eye.xml”作为例子。主要代码在下文讲解，更多代码也可以到我的github获取：<strong><a href="https://github.com/wepe/OpenCV-demo" target="_blank" rel="external">here</a></strong>。</p>
+<h2 id="2、代码实现"><strong>2、代码实现</strong></h2><p>这个demo以下图为输入：</p>
+<p><img src="http://i.imgur.com/TzUF9sz.jpg" alt=""></p>
+<ul>
+<li><p><strong>图像预处理</strong></p>
+<ul>
+<li>转化为灰度图</li>
+<li>直方图均衡化</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Mat img = imread<span class="list">(<span class="string">"obama.jpg"</span>)</span><span class="comment">;</span></span><br><span class="line">Mat img_gray<span class="comment">;</span></span><br><span class="line">cvtColor<span class="list">(<span class="keyword">img</span>,img_gray,COLOR_BGR2GRAY )</span><span class="comment">;</span></span><br><span class="line">equalizeHist<span class="list">(<span class="keyword">img_gray</span>,img_gray)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<ul>
+<li><p><strong>构造级联分类器</strong></p>
+<p>  首先生成一个级联分类器的实例，然后用xml文件初始化该实例（调用load方法），最后调用该实例的detectMultiScale方法，作用在灰度图img_gray上，即可获取该图片中的各个人脸的坐标。detectMultiScale方法返回的是一个vector<rect></rect>类型的容器，里面每个Rect存储的是人脸矩形的左上顶点、矩形宽度、矩形长度(x,y,width,height)。</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CascadeClassifier faces_cascade;</span><br><span class="line">faces_cascade.load(<span class="string">"haarcascade_frontalface_alt.xml"</span>);</span><br><span class="line"><span class="built_in">vector</span>&lt;Rect&gt; faces;</span><br><span class="line">faces_cascade.detectMultiScale(img_gray,faces,<span class="number">1.1</span>, <span class="number">2</span>, <span class="number">0</span>|CV_HAAR_SCALE_IMAGE, Size(<span class="number">30</span>, <span class="number">30</span>) );</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>框出人脸、眼睛</strong></p>
+<p>  这部分用到的是opencv里的绘图工具，可以参考opencv文档<a href="http://www.opencv.org.cn/opencvdoc/2.3.2/html/doc/tutorials/core/basic_geometric_drawing/basic_geometric_drawing.html#drawing-1" target="_blank" rel="external">基本绘画</a>，这里不啰嗦。ellipse画椭圆、circle画圆形，它们的参数(比如circle的圆心半径)由级联分类器返回的Rect确定。</p>
+</li>
+</ul>
+<ul>
+<li><p><strong>截取和保存人脸部分</strong></p>
+<p>  可以根据级联分类器检测返回的Rect，获取图像的ROI，然后调用imwrite方法。</p>
+</li>
+</ul>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Rect roi = faces[i]<span class="comment">;</span></span><br><span class="line">imwrite(saveName,img(roi))<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>由于检测出的face不只一个，所以saveName需要设计一下，具体在代码文件中有注释。</p>
+<ul>
+<li><strong>运行结果</strong></li>
+</ul>
+<p><img src="http://i.imgur.com/Izdfi2g.jpg" alt=""></p>
+<hr>
+<p>转载请注明来源并完整保留文中链接：<a href="http://blog.csdn.net/u012162613/article/details/44081975" target="_blank" rel="external">http://blog.csdn.net/u012162613/article/details/44081975</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/03/13/交叉熵代价函数/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          交叉熵代价函数
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/03/04/《Python核心编程》笔记  Python对象/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Python对象</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="OpenCV人脸检测（C++代码）" data-title="OpenCV人脸检测（C++代码）" data-url="http://2hwp.com/2015/03/05/OpenCV人脸检测（C++代码）/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 wepon
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

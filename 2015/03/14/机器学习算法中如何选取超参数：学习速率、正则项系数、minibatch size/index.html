@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>机器学习算法中如何选取超参数：学习速率、正则项系数、minibatch size | wepon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文是《Neural networks and deep learning》概览 中第三章的一部分，讲机器学习算法中，如何选取初始的超参数的值。（本文会不断补充）
+
+学习速率（learning rate，η）运用梯度下降算法进行优化时，权重的更新规则中，在梯度项前会乘以一个系数，这个系数就叫学习速率η。下面讨论在训练时选取η的策略。
+
+固定的学习速率。如果学习速率太小，则会使收敛过慢，如果学习速率">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习算法中如何选取超参数：学习速率、正则项系数、minibatch size">
+<meta property="og:url" content="http://2hwp.com/2015/03/14/机器学习算法中如何选取超参数：学习速率、正则项系数、minibatch size/index.html">
+<meta property="og:site_name" content="wepon">
+<meta property="og:description" content="本文是《Neural networks and deep learning》概览 中第三章的一部分，讲机器学习算法中，如何选取初始的超参数的值。（本文会不断补充）
+
+学习速率（learning rate，η）运用梯度下降算法进行优化时，权重的更新规则中，在梯度项前会乘以一个系数，这个系数就叫学习速率η。下面讨论在训练时选取η的策略。
+
+固定的学习速率。如果学习速率太小，则会使收敛过慢，如果学习速率">
+<meta property="og:image" content="http://i.imgur.com/TOoT86N.png">
+<meta property="og:image" content="http://i.imgur.com/fuSenrH.png">
+<meta property="og:image" content="http://i.imgur.com/uN05oRu.jpg">
+<meta property="og:image" content="http://i.imgur.com/f2y0QzO.jpg">
+<meta property="og:updated_time" content="2015-08-06T10:43:23.240Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习算法中如何选取超参数：学习速率、正则项系数、minibatch size">
+<meta name="twitter:description" content="本文是《Neural networks and deep learning》概览 中第三章的一部分，讲机器学习算法中，如何选取初始的超参数的值。（本文会不断补充）
+
+学习速率（learning rate，η）运用梯度下降算法进行优化时，权重的更新规则中，在梯度项前会乘以一个系数，这个系数就叫学习速率η。下面讨论在训练时选取η的策略。
+
+固定的学习速率。如果学习速率太小，则会使收敛过慢，如果学习速率">
+  
+    <link rel="alternative" href="/atom.xml" title="wepon" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">wepon</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/categories/机器学习">机器学习</a></li>
+				        
+							<li><a href="/categories/深度学习">深度学习</a></li>
+				        
+							<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+				        
+							<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="mail" target="_blank" href="/" title="mail">mail</a>
+					        
+								<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+					        
+								<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2-regularization/" style="font-size: 10px;">L2 regularization</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/dropout/" style="font-size: 10px;">dropout</a> <a href="/tags/kaggle/" style="font-size: 10px;">kaggle</a> <a href="/tags/keras/" style="font-size: 20px;">keras</a> <a href="/tags/liblinear/" style="font-size: 10px;">liblinear</a> <a href="/tags/libsvm/" style="font-size: 10px;">libsvm</a> <a href="/tags/minibatch-size/" style="font-size: 10px;">minibatch size</a> <a href="/tags/theano/" style="font-size: 20px;">theano</a> <a href="/tags/人脸检测/" style="font-size: 10px;">人脸检测</a> <a href="/tags/可视化/" style="font-size: 10px;">可视化</a> <a href="/tags/学习速率/" style="font-size: 10px;">学习速率</a> <a href="/tags/正则化/" style="font-size: 10px;">正则化</a> <a href="/tags/正则项系数/" style="font-size: 10px;">正则项系数</a> <a href="/tags/流形学习/" style="font-size: 10px;">流形学习</a> <a href="/tags/降维/" style="font-size: 10px;">降维</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">wepon</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">wepon</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/categories/机器学习">机器学习</a></li>
+		        
+					<li><a href="/categories/深度学习">深度学习</a></li>
+		        
+					<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+		        
+					<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="mail" target="_blank" href="/" title="mail">mail</a>
+			        
+						<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+			        
+						<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-机器学习算法中如何选取超参数：学习速率、正则项系数、minibatch size" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/03/14/机器学习算法中如何选取超参数：学习速率、正则项系数、minibatch size/" class="article-date">
+  	<time datetime="2015-03-13T16:00:00.000Z" itemprop="datePublished">2015-03-14</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      机器学习算法中如何选取超参数：学习速率、正则项系数、minibatch size
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/minibatch-size/">minibatch size</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习速率/">学习速率</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/正则项系数/">正则项系数</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/机器学习/">机器学习</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文是<a href="http://blog.csdn.net/u012162613/article/details/44220115" target="_blank" rel="external">《Neural networks and deep learning》概览</a> 中第三章的一部分，讲机器学习算法中，如何选取初始的超参数的值。（本文会不断补充）</p>
+<hr>
+<h2 id="学习速率（learning_rate，η）"><strong>学习速率（learning rate，η）</strong></h2><p>运用梯度下降算法进行优化时，权重的更新规则中，在梯度项前会乘以一个系数，这个系数就叫学习速率η。下面讨论在训练时选取η的策略。</p>
+<ul>
+<li>固定的学习速率。如果学习速率太小，则会使收敛过慢，如果学习速率太大，则会导致代价函数振荡，如下图所示。就下图来说，一个比较好的策略是先将学习速率设置为0.25，然后在训练到第20个Epoch时，学习速率改为0.025。</li>
+</ul>
+<p><img src="http://i.imgur.com/TOoT86N.png" alt=""></p>
+<p>关于为什么学习速率太大时会振荡，看看这张图就知道了，绿色的球和箭头代表当前所处的位置，以及梯度的方向，学习速率越大，那么往箭头方向前进得越多，如果太大则会导致直接跨过谷底到达另一端，所谓“步子太大，迈过山谷”。</p>
+<p><img src="http://i.imgur.com/fuSenrH.png" alt=""></p>
+<p>在实践中，怎么粗略地确定一个比较好的学习速率呢？好像也只能通过尝试。你可以先把学习速率设置为0.01，然后观察training cost的走向，如果cost在减小，那你可以逐步地调大学习速率，试试0.1，1.0….如果cost在增大，那就得减小学习速率，试试0.001，0.0001….经过一番尝试之后，你可以大概确定学习速率的合适的值。</p>
+<a id="more"></a>
+<p>为什么是根据training cost来确定学习速率，而不是根据validation accuracy来确定呢？这里直接引用一段话，有兴趣可以看看：</p>
+<blockquote>
+<p>This all seems quite straightforward. However, using the training cost to pick η appears to contradict what I said earlier in this section, namely, that we’d pick hyper-parameters by evaluating performance using our held-out validation data. In fact, we’ll use validation accuracy to pick the regularization hyper-parameter, the mini-batch size, and network parameters such as the number of layers and hidden neurons, and so on. Why do things differently for the learning rate? Frankly, this choice is my personal aesthetic preference, and is perhaps somewhat idiosyncratic. The reasoning is that the other hyper-parameters are intended to improve the final classification accuracy on the test set, and so it makes sense to select them on the basis of validation accuracy. However, the learning rate is only incidentally meant to impact the final classification accuracy. It’s primary purpose is really to control the step size in gradient descent, and monitoring the training cost is the best way to detect if the step size is too big. With that said, this is a personal aesthetic preference. Early on during learning the training cost usually only decreases if the validation accuracy improves, and so in practice it’s unlikely to make much difference which criterion you use.</p>
+</blockquote>
+<hr>
+<h2 id="Early_Stopping"><strong>Early Stopping</strong></h2><p>所谓early stopping，即在每一个epoch结束时（一个epoch即对所有训练数据的一轮遍历）计算 validation data的accuracy，当accuracy不再提高时，就停止训练。这是很自然的做法，因为accuracy不再提高了，训练下去也没用。另外，这样做还能防止overfitting。</p>
+<p><strong>那么，怎么样才算是validation accuracy不再提高呢？</strong>并不是说validation accuracy一降下来，它就是“不再提高”，因为可能经过这个epoch后，accuracy降低了，但是随后的epoch又让accuracy升上去了，所以不能根据一两次的连续降低就判断“不再提高”。正确的做法是，在训练的过程中，记录最佳的validation accuracy，当连续10次epoch（或者更多次）没达到最佳accuracy时，你可以认为“不再提高”，此时使用early stopping。这个策略就叫<strong>“ no-improvement-in-n”</strong>，n即epoch的次数，可以根据实际情况取10、20、30….</p>
+<hr>
+<h2 id="可变的学习速率"><strong>可变的学习速率</strong></h2><p>在前面我们讲了怎么寻找比较好的learning rate，方法就是不断尝试。在一开始的时候，我们可以将其设大一点，这样就可以使weights快一点发生改变，从而让你看出cost曲线的走向（上升or下降），进一步地你就可以决定增大还是减小learning rate。</p>
+<p>但是问题是，找出这个合适的learning rate之后，我们前面的做法是在训练这个网络的整个过程都使用这个learning rate。这显然不是好的方法，在优化的过程中，learning rate应该是逐步减小的，越接近“山谷”的时候，迈的“步伐”应该越小。</p>
+<p>在讲前面那张cost曲线图时，我们说可以先将learning rate设置为0.25，到了第20个epoch时候设置为0.025。这是人工的调节，而且是在画出那张cost曲线图之后做出的决策。能不能让程序在训练过程中自动地决定在哪个时候减小learning rate？</p>
+<p>答案是肯定的，而且做法很多。<strong>一个简单有效的做法</strong>就是，当validation accuracy满足 no-improvement-in-n规则时，本来我们是要early stopping的，但是我们可以不stop，而是让learning rate减半，之后让程序继续跑。下一次validation accuracy又满足no-improvement-in-n规则时，我们同样再将learning rate减半（此时变为原始learni rate的四分之一）…继续这个过程，直到learning rate变为原来的1/1024再终止程序。（1/1024还是1/512还是其他可以根据实际确定）。【PS：也可以选择每一次将learning rate除以10，而不是除以2.】</p>
+<blockquote>
+<p>A readable recent paper which demonstrates the benefits of variable learning rates in attacking MNIST.《Deep Big Simple Neural Nets Excel on HandwrittenDigit Recognition》</p>
+</blockquote>
+<hr>
+<h2 id="正则项系数（regularization_parameter,_λ）"><strong>正则项系数（regularization parameter, λ）</strong></h2><p>正则项系数初始值应该设置为多少，好像也没有一个比较好的准则。建议一开始将正则项系数λ设置为0，先确定一个比较好的learning rate。然后固定该learning rate，给λ一个值（比如1.0），然后根据validation accuracy，将λ增大或者减小10倍（增减10倍是粗调节，当你确定了λ的合适的数量级后，比如λ = 0.01,再进一步地细调节，比如调节为0.02，0.03，0.009之类。）</p>
+<p>在《Neural Networks：Tricks of the Trade》中的第三章『A Simple Trick for Estimating the Weight Decay Parameter』中，有关于如何估计权重衰减项系数的讨论，有基础的读者可以看一下。</p>
+<hr>
+<h2 id="Mini-batch_size"><strong>Mini-batch size</strong></h2><p>首先说一下采用mini-batch时的权重更新规则。比如mini-batch size设为100，则权重更新的规则为：</p>
+<p><img src="http://i.imgur.com/uN05oRu.jpg" alt=""></p>
+<p>也就是将100个样本的梯度求均值，替代online learning方法中单个样本的梯度值：</p>
+<p><img src="http://i.imgur.com/f2y0QzO.jpg" alt=""></p>
+<p>当采用mini-batch时，我们可以将一个batch里的所有样本放在一个矩阵里，利用线性代数库来加速梯度的计算，这是工程实现中的一个优化方法。</p>
+<p><strong>那么，size要多大？</strong>一个大的batch，可以充分利用矩阵、线性代数库来进行计算的加速，batch越小，则加速效果可能越不明显。当然batch也不是越大越好，太大了，权重的更新就会不那么频繁，导致优化过程太漫长。所以mini-batch size选多少，不是一成不变的，根据你的数据集规模、你的设备计算能力去选。</p>
+<blockquote>
+<p>The way to go is therefore to use some acceptable (but not necessarily optimal) values for the other hyper-parameters, and then trial a number of different mini-batch sizes, scaling η as above. Plot the validation accuracy versus time (as in, real elapsed time, not epoch!), and choose whichever mini-batch size gives you the most rapid improvement in performance. With the mini-batch size chosen you can then proceed to optimize the other hyper-parameters.</p>
+</blockquote>
+<hr>
+<h2 id="更多资料"><strong>更多资料</strong></h2><p>LeCun在1998年的论文《Efficient BackProp》</p>
+<p>Bengio在2012年的论文《Practical recommendations for gradient-based training of deep architectures》,给出了一些建议，包括梯度下降、选取超参数的详细细节。</p>
+<p>以上两篇论文都被收录在了2012年的书《Neural Networks: Tricks of the Trade》里面，这本书里还给出了很多其他的tricks。</p>
+<hr>
+<p>转载请注明出处：<a href="http://blog.csdn.net/u012162613/article/details/44265967" target="_blank" rel="external">http://blog.csdn.net/u012162613/article/details/44265967</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/03/16/《Python核心编程》数字类型/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          《Python核心编程》数字类型
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/03/14/正则化方法：L1和L2 regularization、数据集扩增、dropout/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">正则化方法：L1和L2 regularization、数据集扩增、dropout</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="机器学习算法中如何选取超参数：学习速率、正则项系数、minibatch size" data-title="机器学习算法中如何选取超参数：学习速率、正则项系数、minibatch size" data-url="http://2hwp.com/2015/03/14/机器学习算法中如何选取超参数：学习速率、正则项系数、minibatch size/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 wepon
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
