@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>KMeans聚类算法思想与可视化 | wepon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1.聚类分析1.0 概念聚类分析简称聚类（clustering），是一个把数据集划分成子集的过程，每一个子集是一个簇（cluster），使得簇中的样本彼此相似，但与其他簇中的样本不相似。
+聚类分析不需要事先知道样本的类别，甚至不用知道类别个数，因此它是一种无监督的学习算法，一般用于数据探索，比如群组发现和离群点检测，还可以作为其他算法的预处理步骤。
+下面的动图展示的是一个聚类过程，感受一下：
+
+1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KMeans聚类算法思想与可视化">
+<meta property="og:url" content="http://2hwp.com/2015/08/20/KMeans聚类算法思想与可视化/index.html">
+<meta property="og:site_name" content="wepon">
+<meta property="og:description" content="1.聚类分析1.0 概念聚类分析简称聚类（clustering），是一个把数据集划分成子集的过程，每一个子集是一个簇（cluster），使得簇中的样本彼此相似，但与其他簇中的样本不相似。
+聚类分析不需要事先知道样本的类别，甚至不用知道类别个数，因此它是一种无监督的学习算法，一般用于数据探索，比如群组发现和离群点检测，还可以作为其他算法的预处理步骤。
+下面的动图展示的是一个聚类过程，感受一下：
+
+1">
+<meta property="og:image" content="http://img.blog.csdn.net/20150820180251258">
+<meta property="og:image" content="http://img.blog.csdn.net/20150820180345877">
+<meta property="og:image" content="http://img.blog.csdn.net/20150820180422017">
+<meta property="og:updated_time" content="2015-08-20T11:20:54.473Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KMeans聚类算法思想与可视化">
+<meta name="twitter:description" content="1.聚类分析1.0 概念聚类分析简称聚类（clustering），是一个把数据集划分成子集的过程，每一个子集是一个簇（cluster），使得簇中的样本彼此相似，但与其他簇中的样本不相似。
+聚类分析不需要事先知道样本的类别，甚至不用知道类别个数，因此它是一种无监督的学习算法，一般用于数据探索，比如群组发现和离群点检测，还可以作为其他算法的预处理步骤。
+下面的动图展示的是一个聚类过程，感受一下：
+
+1">
+  
+    <link rel="alternative" href="/atom.xml" title="wepon" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">wepon</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/categories/机器学习">机器学习</a></li>
+				        
+							<li><a href="/categories/深度学习">深度学习</a></li>
+				        
+							<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+				        
+							<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="mail" target="_blank" href="/" title="mail">mail</a>
+					        
+								<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+					        
+								<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/KMeans/" style="font-size: 10px;">KMeans</a> <a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2-regularization/" style="font-size: 10px;">L2 regularization</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/dropout/" style="font-size: 10px;">dropout</a> <a href="/tags/kaggle/" style="font-size: 10px;">kaggle</a> <a href="/tags/keras/" style="font-size: 20px;">keras</a> <a href="/tags/liblinear/" style="font-size: 10px;">liblinear</a> <a href="/tags/libsvm/" style="font-size: 10px;">libsvm</a> <a href="/tags/minibatch-size/" style="font-size: 10px;">minibatch size</a> <a href="/tags/theano/" style="font-size: 20px;">theano</a> <a href="/tags/人脸检测/" style="font-size: 10px;">人脸检测</a> <a href="/tags/可视化/" style="font-size: 20px;">可视化</a> <a href="/tags/学习速率/" style="font-size: 10px;">学习速率</a> <a href="/tags/正则化/" style="font-size: 10px;">正则化</a> <a href="/tags/正则项系数/" style="font-size: 10px;">正则项系数</a> <a href="/tags/流形学习/" style="font-size: 10px;">流形学习</a> <a href="/tags/聚类/" style="font-size: 10px;">聚类</a> <a href="/tags/降维/" style="font-size: 10px;">降维</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">wepon</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">wepon</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/categories/机器学习">机器学习</a></li>
+		        
+					<li><a href="/categories/深度学习">深度学习</a></li>
+		        
+					<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+		        
+					<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="mail" target="_blank" href="/" title="mail">mail</a>
+			        
+						<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+			        
+						<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-KMeans聚类算法思想与可视化" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/08/20/KMeans聚类算法思想与可视化/" class="article-date">
+  	<time datetime="2015-08-19T16:00:00.000Z" itemprop="datePublished">2015-08-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      KMeans聚类算法思想与可视化
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KMeans/">KMeans</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/可视化/">可视化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/聚类/">聚类</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/机器学习/">机器学习</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-聚类分析">1.聚类分析</h1><h3 id="1-0_概念">1.0 概念</h3><p>聚类分析简称聚类（clustering），是一个把数据集划分成子集的过程，每一个子集是一个簇（cluster），使得簇中的样本彼此相似，但与其他簇中的样本不相似。</p>
+<p>聚类分析不需要事先知道样本的类别，甚至不用知道类别个数，因此它是一种无监督的学习算法，一般用于数据探索，比如群组发现和离群点检测，还可以作为其他算法的预处理步骤。</p>
+<p>下面的动图展示的是一个聚类过程，感受一下：</p>
+<p><img src="http://img.blog.csdn.net/20150820180251258" alt="这里写图片描述"></p>
+<h3 id="1-1_基本聚类方法">1.1 基本聚类方法</h3><p>主要的聚类算法一般可以划分为以下几类：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">方法</th>
+<th>一般特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">划分方法</td>
+<td>1.发现球形互斥的簇  2.基于距离  3.可用均值或中心点代表簇中心  4.对中小规模数据有效</td>
+</tr>
+<tr>
+<td style="text-align:center">层次方法</td>
+<td>1.聚类是一个层次分解 2.不能纠正错误的合并或划分 3.可以集成其他技术</td>
+</tr>
+<tr>
+<td style="text-align:center">基于密度的方法</td>
+<td>1.可以发现任意形状的簇 2.簇是对象空间中被低密度区域分隔的稠密区域 3.簇密度  4.可能过滤离群点</td>
+</tr>
+<tr>
+<td style="text-align:center">基于网格的方法</td>
+<td>1.使用一种多分辨率网格数据结构 2.快速处理</td>
+</tr>
+</tbody>
+</table>
+<p>.<br>上面的内容节选自韩家炜的《数据挖掘》，该书中的第十和第十一章对聚类算法进行了详细的介绍。等我详细学习后再对聚类分析做个总结，这篇文章则把重点放在简单的Kmeans算法上，Kmeans算法属于上面分类中的划分方法。</p>
+<a id="more"></a>
+<hr>
+<h1 id="2-Kmeans算法思想">2.Kmeans算法思想</h1><h3 id="2-0_算法步骤">2.0 算法步骤</h3><p>Kmeans算法(k均值算法)是一种简单的聚类算法，属于划分式聚类算法，当给定一个数据集D时，Kmeans算法的步骤如下：</p>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">选择<span class="keyword">K</span>个点作为初始质心（随机产生或者从<span class="keyword">D</span>中选取）  </span><br><span class="line">repeat  </span><br><span class="line">    将每个点分配到最近的质心，形成<span class="keyword">K</span>个簇  </span><br><span class="line">    重新计算每个簇的质心  </span><br><span class="line">until 簇不发生变化或达到最大迭代次数</span><br></pre></td></tr></table></figure>
+<p>若n是样本数，m是特征维数，k是簇数，t是迭代次数，则Kmeans算法的时间复杂度为O(tknm)，与样本数量线性相关，所以在处理大数据集合时比较高效，伸缩性好。空间复杂度为O((n+k)*m)。</p>
+<p>Kmens算法虽然一目了然，但算法实现过程中涉及到的细节也不少，下面逐一介绍。</p>
+<h3 id="2-1_k值选取">2.1 k值选取</h3><p>k的值是用户指定的，表示需要得到的簇的数目。在运用Kmeans算法时，我们一般不知道数据的分布情况，不可能知道数据的集群数目，所以一般通过枚举来确定k的值。另外，在实际应用中，由于Kmean一般作为数据预处理，或者用于辅助分类贴标签，所以k一般不会设置很大。</p>
+<h3 id="2-2_初始质心的选取">2.2 初始质心的选取</h3><p>Kmeans算法对初始质心的选取比较敏感，选取不同的质心，往往会得到不同的结果。初始质心的选取方法，常用以下两种的简单方法：一种是随机选取，一种是用户指定。<br>需要注意的是，无论是随机选取还是用户指定，质心都尽量不要超过原始数据的边界，即质心每一维度上的值要落在原始数据集每一维度的最小与最大值之间。</p>
+<h3 id="2-3_距离度量方法">2.3 距离度量方法</h3><p>距离度量方法（或者说相似性度量方法）有很多种，常用的有欧氏距离，余弦相似度，街区距离，汉明距离等等。在Kmeans算法中，一般采用欧氏距离计算两个点的距离，欧氏距离如下：<br>$$distEclud(X,Y)=\sqrt{ \sum_{i=1}^{n}(X_i-Y_i)^{2}}$$</p>
+<p>举个例子，X=（1000，0.1），Y=（900，0.2）,那么它们的欧氏距离就是：<br>$$\sqrt{ (1000-900)^{2}+(0.1-0.2)^{2}}\approx100$$</p>
+<p>举这个例子是为了说明，当原始数据中各个维度的数量级不同时，它们对结果的影响也随之不同，那些数量级太小的维度，对于结果几乎没产生任何影响。比如所举的例子中的第二个维度的0.1，0.2，与第一个维度1000的数量级相差了一万倍。</p>
+<p>为了赋予数据每个维度同等的重要性，我们在运用欧氏距离时，必须先对数据进行<strong>规范化</strong>，比如将每个维度都缩放到[0,1]之间。</p>
+<h3 id="2-4_质心的计算">2.4 质心的计算</h3><p>在Kmeans算法中，将簇中所有样本的均值作为该簇的质心。这也是Kmeans名字的由来吧。</p>
+<h3 id="2-5_算法停止条件">2.5 算法停止条件</h3><p>在两种情况下算法应该停止：一种是达到了指定的最大迭代次数，一种是算法已经收敛，即各个簇的质心不再发生变化。关于算法的收敛，在2.5部分讨论。</p>
+<h3 id="2-6_代价函数与算法收敛">2.6 代价函数与算法收敛</h3><p>Kmeans算法的代价函数比较简单，就是每个样本点与其所属质心的距离的平方和（误差平方和，Sum of Squared Error,简称SSE）:<br>$$J(c,u)=\sum_{i=1}^{k}{||X^{(i)}-u^{c^{(i)}}||^{2}}$$</p>
+<p>与其他机器学习算法一样，我们要最小化这个代价函数，但这个函数没有解析解，所以只能通过迭代求解的方法来逼近最优解（这一点也和众多机器学习算法一样吧）。所以你再看看算法步骤，其实就是一个迭代过程。</p>
+<p>由于代价函数（SSE）是非凸函数，所以在运用Kmeans算法时，不能保证收敛到一个全局的最优解，我们得到的一般是一个局部的最优解。</p>
+<p>因此，为了取得比较好的效果，我们一般会多跑几次算法（用不同的初始质心），得到多个局部最优解，比较它们的SSE，选取SSE最小的那个。</p>
+<hr>
+<h1 id="3-Kmeans算法实现">3.Kmeans算法实现</h1><h3 id="3-0_代码">3.0 代码</h3><p>这是采用Python编写，基于数值计算库Numpy实现的Kmeans算法，参考了Scikit Learn的设计，将Kmeans封装成一个class，对于代码简要说明如下，具体的可以在这里查看：<a href="https://github.com/wepe/MachineLearning/blob/master/KMeans/kmeans.py#L12" target="_blank" rel="external">代码链接</a>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KMeans</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n_clusters=<span class="number">5</span>,initCent=<span class="string">'random'</span>,max_iter=<span class="number">300</span>)</span>:</span></span><br><span class="line">		<span class="comment">#n_clusters表示聚类个数，相当于k</span></span><br><span class="line">		<span class="comment">#initCent表示质心的初始化方式，可以设为'random'或指定一个数组</span></span><br><span class="line">		<span class="comment">#max_iter表示最大的迭代次数</span></span><br><span class="line">          </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_distEclud</span><span class="params">(self, vecA, vecB)</span>:</span></span><br><span class="line">		<span class="comment">#计算两点的欧式距离</span></span><br><span class="line">         </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_randCent</span><span class="params">(self, X, k)</span>:</span></span><br><span class="line">		<span class="comment">#随机选取k个质心,必须在数据集的边界内</span></span><br><span class="line">               </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fit</span><span class="params">(self, X)</span>:</span></span><br><span class="line">		<span class="comment">#调用fit方法，对数据集X聚类</span></span><br><span class="line">		<span class="comment">#聚类完后将得到质心self.centroids,簇分配结果self.clusterAssment       </span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span><span class="params">(self,X)</span>:</span></span><br><span class="line">		<span class="comment">#根据聚类结果，预测新输入数据所属的族</span></span><br><span class="line">		<span class="comment">#其实就是计算每个点与各个质心self.centroids的距离</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-1_实例">3.1 实例</h3><p>下面看一个简单的例子，首先是数据集的准备，文章开头展示的图片来自于这份数据<a href="https://github.com/wepe/MachineLearning/tree/master/KMeans" target="_blank" rel="external">data.pkl</a>，是经典的手写数字MNIST数据库，我从中选取1000张（包括0～9共十种数字），用t_sne降到了2维（为了可视化）。</p>
+<p>首先，加载数据集：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import cPickle</span><br><span class="line">X,y = cPickle.<span class="function"><span class="title">load</span><span class="params">(open(<span class="string">'data.pkl'</span>,<span class="string">'r'</span>)</span></span>)  #X和y都是numpy.ndarray类型</span><br><span class="line">X<span class="class">.shape</span>  #输出(<span class="number">1000</span>,<span class="number">2</span>)</span><br><span class="line">y<span class="class">.shape</span>  #输出(<span class="number">1000</span>,)对应每个样本的真实标签</span><br></pre></td></tr></table></figure>
+<p>对该数据集进行聚类分析，聚类个数设置为10(因为有十种数字)，质心初始化方式为随机初始化，最大迭代次数设置为100。并利用matplotlib画出聚类结果：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">import numpy <span class="keyword">as</span> np</span><br><span class="line">import matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> kmeans import KMeans</span><br><span class="line">clf = KMeans(n_clusters=<span class="number">10</span>,initCent=<span class="string">'random'</span>,max_iter=<span class="number">100</span>)</span><br><span class="line">clf.fit(X)</span><br><span class="line">cents = clf.centroids<span class="preprocessor">#质心</span></span><br><span class="line">labels = clf.labels<span class="preprocessor">#样本点被分配到的簇的索引</span></span><br><span class="line">sse = clf.sse</span><br><span class="line"><span class="preprocessor">#画出聚类结果，每一类用一种颜色</span></span><br><span class="line">colors = [<span class="string">'b'</span>,<span class="string">'g'</span>,<span class="string">'r'</span>,<span class="string">'k'</span>,<span class="string">'c'</span>,<span class="string">'m'</span>,<span class="string">'y'</span>,<span class="string">'#e24fff'</span>,<span class="string">'#524C90'</span>,<span class="string">'#845868'</span>]</span><br><span class="line">n_clusters = <span class="number">10</span></span><br><span class="line"><span class="function"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="title">range</span>(<span class="params">n_clusters</span>):</span><br><span class="line">	index </span>= np.nonzero(labels==i)[<span class="number">0</span>]</span><br><span class="line">	x0 = X[index,<span class="number">0</span>]</span><br><span class="line">	x1 = X[index,<span class="number">1</span>]</span><br><span class="line">	y_i = y[index]</span><br><span class="line">	<span class="function"><span class="keyword">for</span> j <span class="keyword">in</span> <span class="title">range</span>(<span class="params">len(x0</span>)):</span><br><span class="line">		plt.<span class="title">text</span>(<span class="params">x0[j],x1[j],str(<span class="keyword">int</span>(y_i[j]</span>)),color</span>=colors[i],\</span><br><span class="line">				fontdict=&#123;<span class="string">'weight'</span>: <span class="string">'bold'</span>, <span class="string">'size'</span>: <span class="number">9</span>&#125;)</span><br><span class="line">	plt.scatter(cents[i,<span class="number">0</span>],cents[i,<span class="number">1</span>],marker=<span class="string">'x'</span>,color=colors[i],linewidths=<span class="number">12</span>)</span><br><span class="line">plt.title(<span class="string">"SSE=&#123;:.2f&#125;"</span>.format(sse))</span><br><span class="line">plt.axis([-<span class="number">30</span>,<span class="number">30</span>,-<span class="number">30</span>,<span class="number">30</span>])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>得到的结果如下,可见效果并不好，5和8，3和9都被混为一类：</p>
+<p><img src="http://img.blog.csdn.net/20150820180345877" alt="这里写图片描述"></p>
+<p>而且，不改动上面的代码，每一次得到的结果也不一样，这是因为Kmeans聚类对于初始质心的选取是敏感的，而上面的代码中我们采用随机初始化质心的方式。当然，我们也可以采取指定初始质心的方式，只需要改一行代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clf = KMeans(n_clusters=<span class="number">10</span>,initCent=X[<span class="number">0</span>:<span class="number">10</span>],max_iter=<span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+<p>文章开头的动图，是固定质心为X[50:60]，迭代1～5次得到的，限于文章篇幅，代码不贴上来，放在<a href="https://github.com/wepe/MachineLearning/blob/master/KMeans/test.py" target="_blank" rel="external">test.py</a></p>
+<hr>
+<h2 id="4-二分Kmeans算法">4.二分Kmeans算法</h2><p>二分Kmeans算法（bisecting Kmeans）是为了克服Kmeans算法收敛于局部最小值的问题而提出的。该算法首先将所有点作为一个簇，然后将该簇一分为二。之后选择其中一个簇继续划分，选择哪一个簇进行划分取决于对其划分是否可以最大程度降低SSE的值，上述过程不断迭代，直到得到用户指定的簇数目为止。算法步骤如下：</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">将所有数据点看成一个簇</span><br><span class="line">当簇数目小于k时</span><br><span class="line">       对每一个簇</span><br><span class="line">              计算总误差<span class="comment">(sse_origin)</span></span><br><span class="line">              在给定的簇上面进行k-均值聚类（k=<span class="number">2</span>）</span><br><span class="line">              计算将该簇一分为二后的总误差<span class="comment">(sse_new)</span></span><br><span class="line">       选择使得误差<span class="comment">(sse_new)</span>最小的那个簇进行划分操作</span><br></pre></td></tr></table></figure>
+<p>根据这个步骤，不难写出二分Kmeans算法的代码，同样地，我将其封装成class，源码放在<a href="https://github.com/wepe/MachineLearning/blob/master/KMeans/kmeans.py#L107" target="_blank" rel="external">这里</a>，其使用方法如下：</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="atom">import</span> <span class="atom">numpy</span> <span class="atom">as</span> <span class="atom">np</span></span><br><span class="line"><span class="atom">import</span> <span class="atom">matplotlib</span>.<span class="atom">pyplot</span> <span class="atom">as</span> <span class="atom">plt</span></span><br><span class="line"><span class="atom">from</span> <span class="atom">kmeans</span> <span class="atom">import</span> <span class="atom">biKMeans</span></span><br><span class="line"><span class="atom">n_clusters</span> = <span class="number">10</span></span><br><span class="line"><span class="atom">clf</span> = <span class="atom">biKMeans</span>(<span class="atom">n_clusters</span>)</span><br><span class="line"><span class="atom">clf</span>.<span class="atom">fit</span>(<span class="name">X</span>)</span><br><span class="line"><span class="atom">cents</span> = <span class="atom">clf</span>.<span class="atom">centroids</span></span><br><span class="line"><span class="atom">labels</span> = <span class="atom">clf</span>.<span class="atom">labels</span></span><br><span class="line"><span class="atom">sse</span> = <span class="atom">clf</span>.<span class="atom">sse</span></span><br><span class="line">#画出聚类结果，每一类用一种颜色</span><br><span class="line"><span class="atom">colors</span> = [<span class="string">'b'</span>,<span class="string">'g'</span>,<span class="string">'r'</span>,<span class="string">'k'</span>,<span class="string">'c'</span>,<span class="string">'m'</span>,<span class="string">'y'</span>,<span class="string">'#e24fff'</span>,<span class="string">'#524C90'</span>,<span class="string">'#845868'</span>]</span><br><span class="line"><span class="atom">for</span> <span class="atom">i</span> <span class="atom">in</span> <span class="atom">range</span>(<span class="atom">n_clusters</span>):</span><br><span class="line">	<span class="atom">index</span> = <span class="atom">np</span>.<span class="atom">nonzero</span>(<span class="atom">labels</span>==<span class="atom">i</span>)[<span class="number">0</span>]</span><br><span class="line">	<span class="atom">x0</span> = <span class="name">X</span>[<span class="atom">index</span>,<span class="number">0</span>]</span><br><span class="line">	<span class="atom">x1</span> = <span class="name">X</span>[<span class="atom">index</span>,<span class="number">1</span>]</span><br><span class="line">	<span class="atom">y_i</span> = <span class="atom">y</span>[<span class="atom">index</span>]</span><br><span class="line">	<span class="atom">for</span> <span class="atom">j</span> <span class="atom">in</span> <span class="atom">range</span>(<span class="atom">len</span>(<span class="atom">x0</span>)):</span><br><span class="line">		<span class="atom">plt</span>.<span class="atom">text</span>(<span class="atom">x0</span>[<span class="atom">j</span>],<span class="atom">x1</span>[<span class="atom">j</span>],<span class="atom">str</span>(<span class="atom">int</span>(<span class="atom">y_i</span>[<span class="atom">j</span>])),<span class="atom">color</span>=<span class="atom">colors</span>[<span class="atom">i</span>],\</span><br><span class="line">				<span class="atom">fontdict</span>=&#123;<span class="string">'weight'</span>: <span class="string">'bold'</span>, <span class="string">'size'</span>: <span class="number">9</span>&#125;)</span><br><span class="line">	<span class="atom">plt</span>.<span class="atom">scatter</span>(<span class="atom">cents</span>[<span class="atom">i</span>,<span class="number">0</span>],<span class="atom">cents</span>[<span class="atom">i</span>,<span class="number">1</span>],<span class="atom">marker</span>=<span class="string">'x'</span>,<span class="atom">color</span>=<span class="atom">colors</span>[<span class="atom">i</span>],<span class="atom">linewidths</span>=<span class="number">12</span>)</span><br><span class="line"><span class="atom">plt</span>.<span class="atom">title</span>(<span class="string">"SSE=&#123;:.2f&#125;"</span>.<span class="atom">format</span>(<span class="atom">sse</span>))</span><br><span class="line"><span class="atom">plt</span>.<span class="atom">axis</span>([-<span class="number">30</span>,<span class="number">30</span>,-<span class="number">30</span>,<span class="number">30</span>])</span><br><span class="line"><span class="atom">plt</span>.<span class="atom">show</span>()</span><br></pre></td></tr></table></figure>
+<p>得到下图，可以发现效果也并不是特别好，并且多次运行上面的代码，结果也是不一样的，这是因为二分Kmeans算法在“二分”的时候，采取的也是随机初始化质心的方式。</p>
+<p><img src="http://img.blog.csdn.net/20150820180422017" alt="这里写图片描述"></p>
+<hr>
+<h2 id="5-参考">5.参考</h2><ul>
+<li>《数据挖掘》韩家炜</li>
+<li>《机器学习实战》</li>
+<li><a href="http://blog.csdn.net/qll125596718/article/details/8243404" target="_blank" rel="external">《基本kmeans算法介绍及其实现》</a></li>
+</ul>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/08/03/当Python装饰器碰到递归函数/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">当Python装饰器遇上递归函数</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 wepon
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

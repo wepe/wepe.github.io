@@ -102,7 +102,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2-regularization/" style="font-size: 10px;">L2 regularization</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/dropout/" style="font-size: 10px;">dropout</a> <a href="/tags/kaggle/" style="font-size: 10px;">kaggle</a> <a href="/tags/keras/" style="font-size: 20px;">keras</a> <a href="/tags/liblinear/" style="font-size: 10px;">liblinear</a> <a href="/tags/libsvm/" style="font-size: 10px;">libsvm</a> <a href="/tags/minibatch-size/" style="font-size: 10px;">minibatch size</a> <a href="/tags/theano/" style="font-size: 20px;">theano</a> <a href="/tags/人脸检测/" style="font-size: 10px;">人脸检测</a> <a href="/tags/可视化/" style="font-size: 10px;">可视化</a> <a href="/tags/学习速率/" style="font-size: 10px;">学习速率</a> <a href="/tags/正则化/" style="font-size: 10px;">正则化</a> <a href="/tags/正则项系数/" style="font-size: 10px;">正则项系数</a> <a href="/tags/流形学习/" style="font-size: 10px;">流形学习</a> <a href="/tags/降维/" style="font-size: 10px;">降维</a>
+						<a href="/tags/KMeans/" style="font-size: 10px;">KMeans</a> <a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2-regularization/" style="font-size: 10px;">L2 regularization</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/dropout/" style="font-size: 10px;">dropout</a> <a href="/tags/kaggle/" style="font-size: 10px;">kaggle</a> <a href="/tags/keras/" style="font-size: 20px;">keras</a> <a href="/tags/liblinear/" style="font-size: 10px;">liblinear</a> <a href="/tags/libsvm/" style="font-size: 10px;">libsvm</a> <a href="/tags/minibatch-size/" style="font-size: 10px;">minibatch size</a> <a href="/tags/theano/" style="font-size: 20px;">theano</a> <a href="/tags/人脸检测/" style="font-size: 10px;">人脸检测</a> <a href="/tags/可视化/" style="font-size: 20px;">可视化</a> <a href="/tags/学习速率/" style="font-size: 10px;">学习速率</a> <a href="/tags/正则化/" style="font-size: 10px;">正则化</a> <a href="/tags/正则项系数/" style="font-size: 10px;">正则项系数</a> <a href="/tags/流形学习/" style="font-size: 10px;">流形学习</a> <a href="/tags/聚类/" style="font-size: 10px;">聚类</a> <a href="/tags/降维/" style="font-size: 10px;">降维</a>
 					</div>
 				</section>
 				
@@ -161,6 +161,99 @@
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-KMeans聚类算法思想与可视化" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/08/20/KMeans聚类算法思想与可视化/" class="article-date">
+  	<time datetime="2015-08-19T16:00:00.000Z" itemprop="datePublished">2015-08-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/08/20/KMeans聚类算法思想与可视化/">KMeans聚类算法思想与可视化</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-聚类分析">1.聚类分析</h1><h3 id="1-0_概念">1.0 概念</h3><p>聚类分析简称聚类（clustering），是一个把数据集划分成子集的过程，每一个子集是一个簇（cluster），使得簇中的样本彼此相似，但与其他簇中的样本不相似。</p>
+<p>聚类分析不需要事先知道样本的类别，甚至不用知道类别个数，因此它是一种无监督的学习算法，一般用于数据探索，比如群组发现和离群点检测，还可以作为其他算法的预处理步骤。</p>
+<p>下面的动图展示的是一个聚类过程，感受一下：</p>
+<p><img src="http://img.blog.csdn.net/20150820180251258" alt="这里写图片描述"></p>
+<h3 id="1-1_基本聚类方法">1.1 基本聚类方法</h3><p>主要的聚类算法一般可以划分为以下几类：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">方法</th>
+<th>一般特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">划分方法</td>
+<td>1.发现球形互斥的簇  2.基于距离  3.可用均值或中心点代表簇中心  4.对中小规模数据有效</td>
+</tr>
+<tr>
+<td style="text-align:center">层次方法</td>
+<td>1.聚类是一个层次分解 2.不能纠正错误的合并或划分 3.可以集成其他技术</td>
+</tr>
+<tr>
+<td style="text-align:center">基于密度的方法</td>
+<td>1.可以发现任意形状的簇 2.簇是对象空间中被低密度区域分隔的稠密区域 3.簇密度  4.可能过滤离群点</td>
+</tr>
+<tr>
+<td style="text-align:center">基于网格的方法</td>
+<td>1.使用一种多分辨率网格数据结构 2.快速处理</td>
+</tr>
+</tbody>
+</table>
+<p>.<br>上面的内容节选自韩家炜的《数据挖掘》，该书中的第十和第十一章对聚类算法进行了详细的介绍。等我详细学习后再对聚类分析做个总结，这篇文章则把重点放在简单的Kmeans算法上，Kmeans算法属于上面分类中的划分方法。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KMeans/">KMeans</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/可视化/">可视化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/聚类/">聚类</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/机器学习/">机器学习</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/08/20/KMeans聚类算法思想与可视化/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-当Python装饰器碰到递归函数" class="article article-type-post" itemscope itemprop="blogPost">
   
