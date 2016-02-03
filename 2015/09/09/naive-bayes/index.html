@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>朴素贝叶斯理论推导与三种常见模型 | wepon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="朴素贝叶斯（Naive Bayes）是一种简单的分类算法，它的经典应用案例为人所熟知：文本分类（如垃圾邮件过滤）。很多教材都从这些案例出发，本文就不重复这些内容了，而把重点放在理论推导（其实很浅显，别被“理论”吓到），三种常用模型及其编码实现（Python）。
+如果你对理论推导过程不感兴趣，可以直接逃到三种常用模型及编码实现部分，但我建议你还是看看理论基础部分。
+另外，本文的所有代码都可以在这里获">
+<meta property="og:type" content="article">
+<meta property="og:title" content="朴素贝叶斯理论推导与三种常见模型">
+<meta property="og:url" content="http://2hwp.com/2015/09/09/naive-bayes/index.html">
+<meta property="og:site_name" content="wepon">
+<meta property="og:description" content="朴素贝叶斯（Naive Bayes）是一种简单的分类算法，它的经典应用案例为人所熟知：文本分类（如垃圾邮件过滤）。很多教材都从这些案例出发，本文就不重复这些内容了，而把重点放在理论推导（其实很浅显，别被“理论”吓到），三种常用模型及其编码实现（Python）。
+如果你对理论推导过程不感兴趣，可以直接逃到三种常用模型及编码实现部分，但我建议你还是看看理论基础部分。
+另外，本文的所有代码都可以在这里获">
+<meta property="og:image" content="http://img.blog.csdn.net/20150909084656149">
+<meta property="og:image" content="http://img.blog.csdn.net/20150909085100191">
+<meta property="og:image" content="http://img.blog.csdn.net/20150909085145105">
+<meta property="og:image" content="http://img.blog.csdn.net/20150909085219342">
+<meta property="og:image" content="http://img.blog.csdn.net/20150909092824838">
+<meta property="og:updated_time" content="2016-02-03T07:50:51.180Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="朴素贝叶斯理论推导与三种常见模型">
+<meta name="twitter:description" content="朴素贝叶斯（Naive Bayes）是一种简单的分类算法，它的经典应用案例为人所熟知：文本分类（如垃圾邮件过滤）。很多教材都从这些案例出发，本文就不重复这些内容了，而把重点放在理论推导（其实很浅显，别被“理论”吓到），三种常用模型及其编码实现（Python）。
+如果你对理论推导过程不感兴趣，可以直接逃到三种常用模型及编码实现部分，但我建议你还是看看理论基础部分。
+另外，本文的所有代码都可以在这里获">
+  
+    <link rel="alternative" href="/atom.xml" title="wepon" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">wepon</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/archives">文章归档</a></li>
+				        
+							<li><a href="/categories/机器学习">机器学习</a></li>
+				        
+							<li><a href="/categories/深度学习">深度学习</a></li>
+				        
+							<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+				        
+							<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="mail" target="_blank" href="http://blog.csdn.net/u012162613" title="mail">mail</a>
+					        
+								<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+					        
+								<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/wepon-huang" title="zhihu">zhihu</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/KMeans/" style="font-size: 10px;">KMeans</a> <a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2-regularization/" style="font-size: 10px;">L2 regularization</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/dropout/" style="font-size: 10px;">dropout</a> <a href="/tags/kaggle/" style="font-size: 10px;">kaggle</a> <a href="/tags/keras/" style="font-size: 20px;">keras</a> <a href="/tags/liblinear/" style="font-size: 10px;">liblinear</a> <a href="/tags/libsvm/" style="font-size: 10px;">libsvm</a> <a href="/tags/minibatch-size/" style="font-size: 10px;">minibatch size</a> <a href="/tags/theano/" style="font-size: 20px;">theano</a> <a href="/tags/二值化/" style="font-size: 10px;">二值化</a> <a href="/tags/人脸检测/" style="font-size: 10px;">人脸检测</a> <a href="/tags/伯努利模型/" style="font-size: 10px;">伯努利模型</a> <a href="/tags/可视化/" style="font-size: 20px;">可视化</a> <a href="/tags/多项式模型/" style="font-size: 10px;">多项式模型</a> <a href="/tags/学习速率/" style="font-size: 10px;">学习速率</a> <a href="/tags/朴素贝叶斯/" style="font-size: 10px;">朴素贝叶斯</a> <a href="/tags/标准化/" style="font-size: 10px;">标准化</a> <a href="/tags/正则化/" style="font-size: 10px;">正则化</a> <a href="/tags/正则项系数/" style="font-size: 10px;">正则项系数</a> <a href="/tags/流形学习/" style="font-size: 10px;">流形学习</a> <a href="/tags/类别特征转化/" style="font-size: 10px;">类别特征转化</a> <a href="/tags/聚类/" style="font-size: 10px;">聚类</a> <a href="/tags/规范化/" style="font-size: 10px;">规范化</a> <a href="/tags/贝叶斯定理/" style="font-size: 10px;">贝叶斯定理</a> <a href="/tags/降维/" style="font-size: 10px;">降维</a> <a href="/tags/高斯模型/" style="font-size: 10px;">高斯模型</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">PKU在读，机器学习相关的都喜欢，欢迎收藏本站，我不定期会写写知识总结。个人邮箱不贴上来了，因为之前每天收到很多邮件，我最近没有足够的精力去一一回复，实在抱歉！关于代码问题，可以到Github上提issue，非常感谢。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">wepon</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">wepon</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/archives">文章归档</a></li>
+		        
+					<li><a href="/categories/机器学习">机器学习</a></li>
+		        
+					<li><a href="/categories/深度学习">深度学习</a></li>
+		        
+					<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+		        
+					<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="mail" target="_blank" href="http://blog.csdn.net/u012162613" title="mail">mail</a>
+			        
+						<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+			        
+						<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/wepon-huang" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-naive-bayes" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/09/naive-bayes/" class="article-date">
+  	<time datetime="2015-09-08T16:00:00.000Z" itemprop="datePublished">2015-09-09</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      朴素贝叶斯理论推导与三种常见模型
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/伯努利模型/">伯努利模型</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/多项式模型/">多项式模型</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/朴素贝叶斯/">朴素贝叶斯</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/贝叶斯定理/">贝叶斯定理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/高斯模型/">高斯模型</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/机器学习/">机器学习</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>朴素贝叶斯（Naive Bayes）是一种简单的分类算法，它的经典应用案例为人所熟知：文本分类（如垃圾邮件过滤）。很多教材都从这些案例出发，本文就不重复这些内容了，而把重点放在理论推导（其实很浅显，别被“理论”吓到），三种常用模型及其编码实现（Python）。</p>
+<p>如果你对理论推导过程不感兴趣，可以直接逃到三种常用模型及编码实现部分，但我建议你还是看看理论基础部分。</p>
+<p>另外，本文的所有代码都可以在<a href="https://github.com/wepe/MachineLearning/tree/master/NaiveBayes" target="_blank" rel="external">这里获取</a></p>
+<a id="more"></a>
+<p>文中有几处公式的显示乱了，请读者移步我的CSDN：<a href="http://blog.csdn.net/u012162613/article/details/48323777" target="_blank" rel="external">http://blog.csdn.net/u012162613/article/details/48323777</a></p>
+<hr>
+<h1 id="1-_朴素贝叶斯的理论基础">1. 朴素贝叶斯的理论基础</h1><blockquote>
+<p>朴素贝叶斯算法是基于贝叶斯定理与特征条件独立假设的分类方法。</p>
+</blockquote>
+<p>这里提到的<strong>贝叶斯定理</strong>、<strong>特征条件独立假设</strong>就是朴素贝叶斯的两个重要的理论基础。</p>
+<h2 id="1-1_贝叶斯定理">1.1 贝叶斯定理</h2><p>先看什么是<strong>条件概率</strong>。</p>
+<p>P(A|B)表示事件B已经发生的前提下，事件A发生的概率，叫做事件B发生下事件A的条件概率。其基本求解公式为：</p>
+<p>$$P(A|B)=\frac{P(AB)}{P(B)}$$</p>
+<p>贝叶斯定理便是基于条件概率，通过P(A|B)来求P(B|A)：</p>
+<p>$$P(B|A)=\frac{P(A|B)P(B)}{P(A)}$$</p>
+<p>顺便提一下，上式中的分母P(A),可以根据全概率公式分解为：</p>
+<p>$$ P(A)= \sum_{i=1}^{n}P(B_i)P(A|B_i)$$</p>
+<h2 id="1-2_特征条件独立假设">1.2 特征条件独立假设</h2><p>这一部分开始朴素贝叶斯的理论推导，从中你会深刻地理解什么是特征条件独立假设。</p>
+<p>给定训练数据集（X,Y），其中每个样本x都包括n维特征，即$x=({x_1,x_2,x_3,…,x_n})$，类标记集合含有k种类别，即$y=({y_1,y_2,…,y_k})$。</p>
+<p>如果现在来了一个新样本x，我们要怎么判断它的类别？从概率的角度来看，这个问题就是给定x，它属于哪个类别的概率最大。那么问题就转化为求解$P(y_1|x)$,$P(y_2|x)$…$P(y_k|x)$中最大的那个,即求后验概率最大的输出：</p>
+<p>$$argmax_{y_k}P(y_k|x)$$</p>
+<p>那$P(y_k|x)$怎么求解？答案就是贝叶斯定理：</p>
+<p>$$P(y_k|x)=\frac{P(x|y_k)P(y_k)}{P(x)}$$</p>
+<p>根据全概率公式，可以进一步地分解上式中的分母：</p>
+<p>$$P(y_k|x)=\frac{P(x|y_k)P(y_k)}{\sum_kP(x|y_k)P(y_k)}   【公式1】$$</p>
+<blockquote>
+<p>这里休息两分钟</p>
+</blockquote>
+<p>先不管分母，分子中的$P(y_k)$是先验概率，根据训练集就可以简单地计算出来。</p>
+<p>而条件概率$P(x|y_k)=P(x_1,x_2,…,x_n|y_k)$，它的参数规模是指数数量级别的，假设第i维特征$x_i$可取值的个数有 $S_i$ 个，类别取值个数为k个，那么参数个数为：</p>
+<p>$$k\prod_{i=1}^{n}S_i$$</p>
+<p>这显然不可行。<strong>针对这个问题，朴素贝叶斯算法对条件概率分布作出了独立性的假设</strong>，通俗地讲就是说假设各个维度的特征$x_1,x_2,…,x_n$互相独立，在这个假设的前提上，条件概率可以转化为：</p>
+<p>$$\prod_{i=1}^{n}P(x_i|y_k)  【公式2】$$</p>
+<p>这样，参数规模就降到$\sum_{i=1}^{n}S_i k$</p>
+<p>以上就是针对条件概率所作出的特征条件独立性假设，至此，先验概率$P(y_k)$和条件概率$P(x|y_k)$的求解问题就都解决了，那么我们是不是可以求解我们所要的后验概率$P(y_k|x)$了？</p>
+<blockquote>
+<p>这里思考两分钟</p>
+</blockquote>
+<p>答案是肯定的。我们继续上面关于$P(y_k|x)$的推导，将【公式2】代入【公式1】得到：</p>
+<p>$P(y_k|x)=\frac{P(y<em>k)\prod</em>{i=1}^{n}P(x_i|y<em>k)}{\sum</em>{k}P(y<em>k)\prod</em>{i=1}^{n}P(x_i|y_k)}$</p>
+<p>于是朴素贝叶斯分类器可表示为：</p>
+<p>$f(x)=argmax_{y_k} P(y<em>k|x)=argmax</em>{y_k} \frac{P(y<em>k)\prod</em>{i=1}^{n}P(x_i|y<em>k)}{\sum</em>{k}P(y<em>k)\prod</em>{i=1}^{n}P(x_i|y_k)}$</p>
+<p>因为对所有的$y_k$，上式中的分母的值都是一样的（为什么？注意到全加符号就容易理解了），所以可以忽略分母部分，朴素贝叶斯分类器最终表示为：</p>
+<p>$f(x)=argmax P(y<em>k)\prod</em>{i=1}^{n}P(x_i|y_k)$</p>
+<p>关于$P(y_k)$，$P(x_i|y_k)$的求解，有以下三种常见的模型.</p>
+<h1 id="2-_三种常见的模型及编程实现">2. 三种常见的模型及编程实现</h1><h2 id="2-1_多项式模型">2.1 多项式模型</h2><p>当特征是离散的时候，使用多项式模型。多项式模型在计算先验概率$P(y_k)$和条件概率$P(x_i|y_k)$时，会做一些<strong>平滑处理</strong>，具体公式为：</p>
+<p>$P(y<em>k)=\frac{N</em>{y_k}+\alpha}{N+k\alpha}$</p>
+<blockquote>
+<p>N是总的样本个数，k是总的类别个数，$N_{y_k}$是类别为$y_k$的样本个数，$\alpha$是平滑值。</p>
+</blockquote>
+<p>$P(x_i|y<em>k)=\frac{N</em>{y_k,x<em>i}+\alpha}{N</em>{y_k}+n\alpha}$</p>
+<blockquote>
+<p>$N_{y_k}$是类别为$y<em>k$的样本个数，n是特征的维数，$N</em>{y_k,x_i}$是类别为$y_k$的样本中，第i维特征的值是$x_i$的样本个数，$\alpha$是平滑值。</p>
+</blockquote>
+<p>当$\alpha=1$时，称作Laplace平滑，当$0&lt;\alpha&lt;1$时，称作Lidstone平滑，$\alpha=0$时不做平滑。</p>
+<p>如果不做平滑，当某一维特征的值$x_i$没在训练样本中出现过时，会导致$P(x_i|y_k)=0$，从而导致后验概率为0。加上平滑就可以克服这个问题。</p>
+<h3 id="2-1-1_举例">2.1.1 举例</h3><p>有如下训练数据，15个样本，2维特征$X^1,X^2$，2种类别-1，1。给定测试样本$x=(2,S)^{T}$，判断其类别。</p>
+<p><img src="http://img.blog.csdn.net/20150909084656149" alt="这里写图片描述"></p>
+<p>解答如下：</p>
+<p>运用多项式模型，令$\alpha=1$</p>
+<ul>
+<li>计算先验概率</li>
+</ul>
+<p><img src="http://img.blog.csdn.net/20150909085100191" alt="这里写图片描述"></p>
+<ul>
+<li>计算各种条件概率</li>
+</ul>
+<p><img src="http://img.blog.csdn.net/20150909085145105" alt="这里写图片描述"></p>
+<ul>
+<li>对于给定的$x=(2,S)^{T}$，计算：</li>
+</ul>
+<p><img src="http://img.blog.csdn.net/20150909085219342" alt="这里写图片描述"></p>
+<p>由此可以判定y=-1。</p>
+<h3 id="2-1-2_编程实现（基于Python，Numpy）">2.1.2 编程实现（基于Python，Numpy）</h3><p>从上面的实例可以看到，当给定训练集时，我们无非就是先计算出所有的先验概率和条件概率，然后把它们存起来（当成一个查找表）。当来一个测试样本时，我们就计算它所有可能的后验概率，最大的那个对应的就是测试样本的类别，而后验概率的计算无非就是在查找表里查找需要的值。</p>
+<p>我的代码就是根据这个思想来写的。定义一个MultinomialNB类，它有两个主要的方法：fit(X,y)和predict(X)。fit方法其实就是训练，调用fit方法时，做的工作就是构建查找表。predict方法就是预测，调用predict方法时，做的工作就是求解所有后验概率并找出最大的那个。此外，类的构造函数__init__()中，允许设定$\alpha$的值，以及设定先验概率的值。具体代码及如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""</span><br><span class="line">Created on 2015/09/06</span><br><span class="line"></span><br><span class="line">@author: wepon (http://2hwp.com)</span><br><span class="line"></span><br><span class="line">API Reference: http://scikit-learn.org/stable/modules/naive_bayes.html#naive-bayes</span><br><span class="line">"""</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MultinomialNB</span><span class="params">(object)</span>:</span></span><br><span class="line">        <span class="string">"""</span><br><span class="line">	    Naive Bayes classifier for multinomial models</span><br><span class="line">        The multinomial Naive Bayes classifier is suitable for classification with</span><br><span class="line">        discrete features</span><br><span class="line">	</span><br><span class="line">	    Parameters</span><br><span class="line">        ----------</span><br><span class="line">        alpha : float, optional (default=1.0)</span><br><span class="line">                Setting alpha = 0 for no smoothing</span><br><span class="line">		Setting 0 &lt; alpha &lt; 1 is called Lidstone smoothing</span><br><span class="line">		Setting alpha = 1 is called Laplace smoothing </span><br><span class="line">        fit_prior : boolean</span><br><span class="line">                Whether to learn class prior probabilities or not.</span><br><span class="line">                If false, a uniform prior will be used.</span><br><span class="line">        class_prior : array-like, size (n_classes,)</span><br><span class="line">                Prior probabilities of the classes. If specified the priors are not</span><br><span class="line">                adjusted according to the data.</span><br><span class="line">		</span><br><span class="line">	    Attributes</span><br><span class="line">        ----------</span><br><span class="line">        fit(X,y):</span><br><span class="line">                X and y are array-like, represent features and labels.</span><br><span class="line">                call fit() method to train Naive Bayes classifier.</span><br><span class="line">        </span><br><span class="line">        predict(X):</span><br><span class="line">                </span><br><span class="line">	</span><br><span class="line">	"""</span></span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,alpha=<span class="number">1.0</span>,fit_prior=True,class_prior=None)</span>:</span></span><br><span class="line">        self.alpha = alpha</span><br><span class="line">		self.fit_prior = fit_prior</span><br><span class="line">		self.class_prior = class_prior</span><br><span class="line">		self.classes = <span class="keyword">None</span></span><br><span class="line">		self.conditional_prob = <span class="keyword">None</span></span><br><span class="line">		</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">_calculate_feature_prob</span><span class="params">(self,feature)</span>:</span></span><br><span class="line">        values = np.unique(feature)</span><br><span class="line">		total_num = float(len(feature))</span><br><span class="line">		value_prob = &#123;&#125;</span><br><span class="line">		<span class="keyword">for</span> v <span class="keyword">in</span> values:</span><br><span class="line">			value_prob[v] = (( np.sum(np.equal(feature,v)) + self.alpha ) /( total_num + len(values)*self.alpha))</span><br><span class="line">		<span class="keyword">return</span> value_prob</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">fit</span><span class="params">(self,X,y)</span>:</span></span><br><span class="line">		<span class="comment">#<span class="doctag">TODO:</span> check X,y</span></span><br><span class="line">		</span><br><span class="line">		self.classes = np.unique(y)</span><br><span class="line">		<span class="comment">#calculate class prior probabilities: P(y=ck)</span></span><br><span class="line">		<span class="keyword">if</span> self.class_prior == <span class="keyword">None</span>:</span><br><span class="line">            class_num = len(self.classes)</span><br><span class="line">			<span class="keyword">if</span> <span class="keyword">not</span> self.fit_prior:</span><br><span class="line">				self.class_prior = [<span class="number">1.0</span>/class_num <span class="keyword">for</span> _ <span class="keyword">in</span> range(class_num)]  <span class="comment">#uniform prior</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				self.class_prior = []</span><br><span class="line">				sample_num = float(len(y))</span><br><span class="line">				<span class="keyword">for</span> c <span class="keyword">in</span> self.classes:</span><br><span class="line">					c_num = np.sum(np.equal(y,c))</span><br><span class="line">					self.class_prior.append((c_num+self.alpha)/(sample_num+class_num*self.alpha))</span><br><span class="line">		</span><br><span class="line">		<span class="comment">#calculate Conditional Probability: P( xj | y=ck )</span></span><br><span class="line">		self.conditional_prob = &#123;&#125;  <span class="comment"># like &#123; c0:&#123; x0:&#123; value0:0.2, value1:0.8 &#125;, x1:&#123;&#125; &#125;, c1:&#123;...&#125; &#125;</span></span><br><span class="line">		<span class="keyword">for</span> c <span class="keyword">in</span> self.classes:</span><br><span class="line">			self.conditional_prob[c] = &#123;&#125;</span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> range(len(X[<span class="number">0</span>])):  <span class="comment">#for each feature</span></span><br><span class="line">                feature = X[np.equal(y,c)][:,i]</span><br><span class="line">				self.conditional_prob[c][i] = self._calculate_feature_prob(feature)</span><br><span class="line">		<span class="keyword">return</span> self</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">#given values_prob &#123;value0:0.2,value1:0.1,value3:0.3,.. &#125; and target_value</span></span><br><span class="line">	<span class="comment">#return the probability of target_value</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">_get_xj_prob</span><span class="params">(self,values_prob,target_value)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> values_prob[target_value]</span><br><span class="line">	</span><br><span class="line">    <span class="comment">#predict a single sample based on (class_prior,conditional_prob)</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">_predict_single_sample</span><span class="params">(self,x)</span>:</span></span><br><span class="line">        label = -<span class="number">1</span></span><br><span class="line">        max_posterior_prob = <span class="number">0</span></span><br><span class="line">                </span><br><span class="line">		<span class="comment">#for each category, calculate its posterior probability: class_prior * conditional_prob</span></span><br><span class="line">        <span class="keyword">for</span> c_index <span class="keyword">in</span> range(len(self.classes)):</span><br><span class="line">            current_class_prior = self.class_prior[c_index]</span><br><span class="line">			current_conditional_prob = <span class="number">1.0</span></span><br><span class="line">			feature_prob = self.conditional_prob[self.classes[c_index]]</span><br><span class="line">			j = <span class="number">0</span></span><br><span class="line">			<span class="keyword">for</span> feature_i <span class="keyword">in</span> feature_prob.keys():</span><br><span class="line">                current_conditional_prob *= self._get_xj_prob(feature_prob[feature_i],x[j])</span><br><span class="line">				j += <span class="number">1</span></span><br><span class="line">			</span><br><span class="line">			<span class="comment">#compare posterior probability and update max_posterior_prob, label</span></span><br><span class="line">			<span class="keyword">if</span> current_class_prior * current_conditional_prob &gt; max_posterior_prob:</span><br><span class="line">				max_posterior_prob = current_class_prior * current_conditional_prob</span><br><span class="line">				label = self.classes[c_index]</span><br><span class="line">		<span class="keyword">return</span> label</span><br><span class="line">	</span><br><span class="line">	<span class="comment">#predict samples (also single sample)			</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">predict</span><span class="params">(self,X)</span>:</span></span><br><span class="line">        <span class="comment">#TODO1:check and raise NoFitError </span></span><br><span class="line">        <span class="comment">#ToDO2:check X</span></span><br><span class="line">        <span class="keyword">if</span> X.ndim == <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> self._predict_single_sample(X)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment">#classify each sample 	</span></span><br><span class="line">                labels = []</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> range(X.shape[<span class="number">0</span>]):</span><br><span class="line">                        label = self._predict_single_sample(X[i])</span><br><span class="line">                        labels.append(label)</span><br><span class="line">                <span class="keyword">return</span> labels</span><br></pre></td></tr></table></figure>
+<p>我们用上面举的例子来检验一下，注意S,M,L我这里用4，5，6替换：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">X = np.<span class="built_in">array</span>([</span><br><span class="line">                      [<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>],</span><br><span class="line">                      [<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">6</span>]</span><br><span class="line">             ])</span><br><span class="line">X = X.T</span><br><span class="line">y = np.<span class="built_in">array</span>([-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,-<span class="number">1</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,-<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">nb = MultinomialNB(alpha=<span class="number">1.0</span>,fit_prior=True)</span><br><span class="line">nb.fit(X,y)</span><br><span class="line">print nb.predict(np.<span class="built_in">array</span>([<span class="number">2</span>,<span class="number">4</span>]))<span class="preprocessor">#输出-<span class="number">1</span></span></span><br></pre></td></tr></table></figure>
+<h2 id="2-2_高斯模型">2.2 高斯模型</h2><p>当特征是连续变量的时候，运用多项式模型就会导致很多$P(x_i|y_k)=0$（不做平滑的情况下），此时即使做平滑，所得到的条件概率也难以描述真实情况。所以处理连续的特征变量，应该采用高斯模型。</p>
+<h3 id="2-2-1_通过一个例子来说明：">2.2.1  通过一个例子来说明：</h3><p><a href="http://www.ruanyifeng.com/blog/2013/12/naive_bayes_classifier.html" target="_blank" rel="external">性别分类的例子</a><br><a href="https://en.wikipedia.org/wiki/Naive_Bayes_classifier#Sex_classification" target="_blank" rel="external">来自维基</a></p>
+<p>下面是一组人类身体特征的统计资料。<br>| 性别 | 身高（英尺） | 体重（磅） |脚掌（英寸）|<br>| :————-: |:————-:| :—–:|:—–:|<br>|　男 　|　　6 　　|　　　　180　　|　　　12 |<br>|男 　|　　5.92　　|　　　190　　　|　　11   |<br>|男 　　|　5.58　　|　　　170　　　|　　12 |<br>|　　男 　　|　5.92　|　　　　165　　|　　　10 |<br>|　　女 　　|　5 　|　　　　　100　　　|　　6 |<br>|　　女 　|　　5.5 　　|　　　150　　|　　　8 |<br>|　　女 　|　　5.42　　|　　　130　|　　　　7 |<br>|　　女 　|　　5.75　　|　　　150　|　　　　9|</p>
+<p>已知某人身高6英尺、体重130磅，脚掌8英寸，请问该人是男是女？<br>根据朴素贝叶斯分类器，计算下面这个式子的值。</p>
+<pre><code><span class="function"><span class="title">P</span><span class="params">(身高|性别)</span></span> x <span class="function"><span class="title">P</span><span class="params">(体重|性别)</span></span> x <span class="function"><span class="title">P</span><span class="params">(脚掌|性别)</span></span> x <span class="function"><span class="title">P</span><span class="params">(性别)</span></span>
+</code></pre><p>这里的困难在于，由于身高、体重、脚掌都是连续变量，不能采用离散变量的方法计算概率。而且由于样本太少，所以也无法分成区间计算。怎么办？<br>这时，可以假设男性和女性的身高、体重、脚掌都是正态分布，通过样本计算出均值和方差，也就是得到正态分布的密度函数。有了密度函数，就可以把值代入，算出某一点的密度函数的值。<br>比如，男性的身高是均值5.855、方差0.035的正态分布。所以，男性的身高为6英尺的概率的相对值等于1.5789（大于1并没有关系，因为这里是密度函数的值，只用来反映各个值的相对可能性）。</p>
+<p><img src="http://img.blog.csdn.net/20150909092824838" alt="这里写图片描述"></p>
+<p>对于脚掌和体重同样可以计算其均值与方差。有了这些数据以后，就可以计算性别的分类了。<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">P</span><span class="params">(身高=<span class="number">6</span>|男)</span></span> x <span class="function"><span class="title">P</span><span class="params">(体重=<span class="number">130</span>|男)</span></span> x <span class="function"><span class="title">P</span><span class="params">(脚掌=<span class="number">8</span>|男)</span></span> x <span class="function"><span class="title">P</span><span class="params">(男)</span></span> </span><br><span class="line">　　　　= <span class="number">6.1984</span> x e-<span class="number">9</span></span><br><span class="line">　　<span class="function"><span class="title">P</span><span class="params">(身高=<span class="number">6</span>|女)</span></span> x <span class="function"><span class="title">P</span><span class="params">(体重=<span class="number">130</span>|女)</span></span> x <span class="function"><span class="title">P</span><span class="params">(脚掌=<span class="number">8</span>|女)</span></span> x <span class="function"><span class="title">P</span><span class="params">(女)</span></span> </span><br><span class="line">　　　　= <span class="number">5.3778</span> x e-<span class="number">4</span></span><br></pre></td></tr></table></figure></p>
+<p>可以看到，女性的概率比男性要高出将近10000倍，所以判断该人为女性。</p>
+<ul>
+<li>总结</li>
+</ul>
+<p><strong>高斯模型假设每一维特征都服从高斯分布（正态分布）：</strong></p>
+<p>$P(x_i|y<em>k)=\frac{1}{\sqrt{2\pi\sigma</em>{y_k,i}^{2}}}e^{-\frac{(x<em>i-\mu</em>{y<em>k,i})^{2}}{2  \sigma</em>{y_k,i}^{2}}}$</p>
+<p>$\mu_{y_k,i}$表示类别为$y<em>k$的样本中，第i维特征的均值。<br>$\sigma</em>{y_k,i}^{2}$表示类别为$y_k$的样本中，第i维特征的方差。</p>
+<h3 id="2-2-2_编程实现">2.2.2 编程实现</h3><p>高斯模型与多项式模型唯一不同的地方就在于计算 $ P( x_i | y_k) $，高斯模型假设各维特征服从正态分布，需要计算的是各维特征的均值与方差。所以我们定义GaussianNB类，继承自MultinomialNB并且重载相应的方法即可。代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#GaussianNB differ from MultinomialNB in these two method:</span></span><br><span class="line"><span class="comment"># _calculate_feature_prob, _get_xj_prob</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GaussianNB</span><span class="params">(MultinomialNB)</span>:</span></span><br><span class="line">        <span class="string">"""</span><br><span class="line">        GaussianNB inherit from MultinomialNB,so it has self.alpha</span><br><span class="line">        and self.fit() use alpha to calculate class_prior</span><br><span class="line">        However,GaussianNB should calculate class_prior without alpha.</span><br><span class="line">        Anyway,it make no big different</span><br><span class="line"></span><br><span class="line">        """</span></span><br><span class="line">        <span class="comment">#calculate mean(mu) and standard deviation(sigma) of the given feature</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">_calculate_feature_prob</span><span class="params">(self,feature)</span>:</span></span><br><span class="line">                mu = np.mean(feature)</span><br><span class="line">                sigma = np.std(feature)</span><br><span class="line">                <span class="keyword">return</span> (mu,sigma)</span><br><span class="line">        </span><br><span class="line">        <span class="comment">#the probability density for the Gaussian distribution </span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">_prob_gaussian</span><span class="params">(self,mu,sigma,x)</span>:</span></span><br><span class="line">                <span class="keyword">return</span> ( <span class="number">1.0</span>/(sigma * np.sqrt(<span class="number">2</span> * np.pi)) *</span><br><span class="line">                        np.exp( - (x - mu)**<span class="number">2</span> / (<span class="number">2</span> * sigma**<span class="number">2</span>)) )</span><br><span class="line">        </span><br><span class="line">        <span class="comment">#given mu and sigma , return Gaussian distribution probability for target_value</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">_get_xj_prob</span><span class="params">(self,mu_sigma,target_value)</span>:</span></span><br><span class="line">                <span class="keyword">return</span> self._prob_gaussian(mu_sigma[<span class="number">0</span>],mu_sigma[<span class="number">1</span>],target_value)</span><br></pre></td></tr></table></figure>
+<h2 id="2-3_伯努利模型">2.3 伯努利模型</h2><p>与多项式模型一样，伯努利模型适用于离散特征的情况，所不同的是，伯努利模型中每个特征的取值只能是1和0(以文本分类为例，某个单词在文档中出现过，则其特征值为1，否则为0).</p>
+<p>伯努利模型中，条件概率$P(x_i|y_k)$的计算方式是：</p>
+<p>当特征值$x_i$为1时，$P(x_i|y_k)=P(x_i=1|y_k)$；</p>
+<p>当特征值$x_i$为0时，$P(x_i|y_k)=1-P(x_i=1|y_k)$；</p>
+<h3 id="2-3-1_编程实现">2.3.1 编程实现</h3><p>伯努利模型和多项式模型是一致的，BernoulliNB需要比MultinomialNB多定义一个二值化的方法，用于将输入的特征二值化（1，0）。当然也可以直接采用MultinomialNB，但需要将输入的特征预先二值化。写到这里不想写了，编程实现留给读者。</p>
+<h2 id="3_参考文献">3 参考文献</h2><ul>
+<li>《统计学习方法》，李航</li>
+<li>《机器学习》</li>
+<li><a href="https://en.wikipedia.org/wiki/Naive_Bayes_classifier#Sex_classification" target="_blank" rel="external">维基百科Sex classification</a></li>
+<li><a href="http://www.letiantian.me/2014-10-12-three-models-of-naive-nayes/" target="_blank" rel="external">朴素贝叶斯的三个常用模型：高斯、多项式、伯努利</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2013/12/naive_bayes_classifier.html" target="_blank" rel="external">朴素贝叶斯分类器的应用</a></li>
+<li><a href="http://blog.csdn.net/pongba/article/details/2958094" target="_blank" rel="external">数学之美番外篇：平凡而又神奇的贝叶斯方法</a></li>
+</ul>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/02/03/data-preprocessing/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          数据预处理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/08/20/KMeans/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">KMeans聚类算法思想与可视化</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 wepon
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

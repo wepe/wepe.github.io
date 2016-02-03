@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>当Python装饰器遇上递归函数 | wepon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="不久前我在参加某比赛时，写了一些处理数据的代码，当时并没有采用SQL，而是用Python去实现。为了计算监测处理数据所耗费的时间，当时写了这样code：
+12345import timet_start = time.time()func()t_end = time.time()print &quot;run time %.5f&quot; %(t_end-t_start)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="当Python装饰器遇上递归函数">
+<meta property="og:url" content="http://2hwp.com/2015/08/03/Python-decorator-recursion/index.html">
+<meta property="og:site_name" content="wepon">
+<meta property="og:description" content="不久前我在参加某比赛时，写了一些处理数据的代码，当时并没有采用SQL，而是用Python去实现。为了计算监测处理数据所耗费的时间，当时写了这样code：
+12345import timet_start = time.time()func()t_end = time.time()print &quot;run time %.5f&quot; %(t_end-t_start)">
+<meta property="og:updated_time" content="2016-02-03T08:03:43.754Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="当Python装饰器遇上递归函数">
+<meta name="twitter:description" content="不久前我在参加某比赛时，写了一些处理数据的代码，当时并没有采用SQL，而是用Python去实现。为了计算监测处理数据所耗费的时间，当时写了这样code：
+12345import timet_start = time.time()func()t_end = time.time()print &quot;run time %.5f&quot; %(t_end-t_start)">
+  
+    <link rel="alternative" href="/atom.xml" title="wepon" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">wepon</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/archives">文章归档</a></li>
+				        
+							<li><a href="/categories/机器学习">机器学习</a></li>
+				        
+							<li><a href="/categories/深度学习">深度学习</a></li>
+				        
+							<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+				        
+							<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="mail" target="_blank" href="http://blog.csdn.net/u012162613" title="mail">mail</a>
+					        
+								<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+					        
+								<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/wepon-huang" title="zhihu">zhihu</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/KMeans/" style="font-size: 10px;">KMeans</a> <a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2-regularization/" style="font-size: 10px;">L2 regularization</a> <a href="/tags/OpenCV/" style="font-size: 10px;">OpenCV</a> <a href="/tags/dropout/" style="font-size: 10px;">dropout</a> <a href="/tags/kaggle/" style="font-size: 10px;">kaggle</a> <a href="/tags/keras/" style="font-size: 20px;">keras</a> <a href="/tags/liblinear/" style="font-size: 10px;">liblinear</a> <a href="/tags/libsvm/" style="font-size: 10px;">libsvm</a> <a href="/tags/minibatch-size/" style="font-size: 10px;">minibatch size</a> <a href="/tags/theano/" style="font-size: 20px;">theano</a> <a href="/tags/二值化/" style="font-size: 10px;">二值化</a> <a href="/tags/人脸检测/" style="font-size: 10px;">人脸检测</a> <a href="/tags/伯努利模型/" style="font-size: 10px;">伯努利模型</a> <a href="/tags/可视化/" style="font-size: 20px;">可视化</a> <a href="/tags/多项式模型/" style="font-size: 10px;">多项式模型</a> <a href="/tags/学习速率/" style="font-size: 10px;">学习速率</a> <a href="/tags/朴素贝叶斯/" style="font-size: 10px;">朴素贝叶斯</a> <a href="/tags/标准化/" style="font-size: 10px;">标准化</a> <a href="/tags/正则化/" style="font-size: 10px;">正则化</a> <a href="/tags/正则项系数/" style="font-size: 10px;">正则项系数</a> <a href="/tags/流形学习/" style="font-size: 10px;">流形学习</a> <a href="/tags/类别特征转化/" style="font-size: 10px;">类别特征转化</a> <a href="/tags/聚类/" style="font-size: 10px;">聚类</a> <a href="/tags/规范化/" style="font-size: 10px;">规范化</a> <a href="/tags/贝叶斯定理/" style="font-size: 10px;">贝叶斯定理</a> <a href="/tags/降维/" style="font-size: 10px;">降维</a> <a href="/tags/高斯模型/" style="font-size: 10px;">高斯模型</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">PKU在读，机器学习相关的都喜欢，欢迎收藏本站，我不定期会写写知识总结。个人邮箱不贴上来了，因为之前每天收到很多邮件，我最近没有足够的精力去一一回复，实在抱歉！关于代码问题，可以到Github上提issue，非常感谢。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">wepon</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7u2mpb.com1.z0.glb.clouddn.com/未名寒冬0.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">wepon</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/archives">文章归档</a></li>
+		        
+					<li><a href="/categories/机器学习">机器学习</a></li>
+		        
+					<li><a href="/categories/深度学习">深度学习</a></li>
+		        
+					<li><a href="/categories/计算机视觉">计算机视觉</a></li>
+		        
+					<li><a href="/categories/数据挖掘">数据挖掘</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="mail" target="_blank" href="http://blog.csdn.net/u012162613" title="mail">mail</a>
+			        
+						<a class="github" target="_blank" href="https://github.com/wepe" title="github">github</a>
+			        
+						<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/wepon-huang" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Python-decorator-recursion" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/08/03/Python-decorator-recursion/" class="article-date">
+  	<time datetime="2015-08-02T16:00:00.000Z" itemprop="datePublished">2015-08-03</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      当Python装饰器遇上递归函数
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Python/">Python</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>不久前我在参加某比赛时，写了一些处理数据的代码，当时并没有采用SQL，而是用Python去实现。为了计算监测处理数据所耗费的时间，当时写了这样code：</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import <span class="built_in">time</span></span><br><span class="line">t_start = <span class="built_in">time</span>.<span class="built_in">time</span>()</span><br><span class="line">func()</span><br><span class="line">t_end = <span class="built_in">time</span>.<span class="built_in">time</span>()</span><br><span class="line"><span class="built_in">print</span> "run <span class="built_in">time</span> %.<span class="number">5</span>f" %(t_end-t_start)</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>这样写确实没什么问题，但是一旦使用的次数多了，会发现代码非常累赘，比如说要得到func1(),func2(),func3()三个函数的运行时间，就得写三次上面的代码。</p>
+<p>那时我就在想，Python没有提供实现这种功能的内置函数吗？当然，因为只是一个小问题所以当时也没有去细究。直到前阵子，在写装饰器有关的代码时，想起了这件事，一拍脑袋，这不就是我要的“内置函数”嘛，有了装饰器，实现这个计时的小功能不是分分钟的事嘛。当然，后面我又碰到了难题，请往下看。</p>
+<p>首先，我写了这么一个装饰器，用来获取函数运行的时间：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">runTime</span><span class="params">(func)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args,**kwargs)</span>:</span></span><br><span class="line">        <span class="keyword">import</span> time</span><br><span class="line">        t1 = time.time()</span><br><span class="line">        func(*args,**kwargs)</span><br><span class="line">        t2 = time.time()</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"%s run time: %.5f s"</span> %(func.__name__,t2-t1)</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br></pre></td></tr></table></figure></p>
+<p>然后我写了个冒泡排序来测试一下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@runTime</span><br><span class="line">def <span class="function"><span class="title">bubbleSort</span><span class="params">(a)</span></span>:   </span><br><span class="line">    length = <span class="function"><span class="title">len</span><span class="params">(a)</span></span></span><br><span class="line">    <span class="keyword">for</span> <span class="tag">i</span> <span class="keyword">in</span> <span class="function"><span class="title">range</span><span class="params">(length)</span></span>:</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="function"><span class="title">range</span><span class="params">(<span class="number">0</span>,length-<span class="number">1</span>-i)</span></span>:</span><br><span class="line">            <span class="keyword">if</span> <span class="tag">a</span>[j] &gt; <span class="tag">a</span>[j+<span class="number">1</span>]:</span><br><span class="line">                <span class="tag">a</span>[j],<span class="tag">a</span>[j+<span class="number">1</span>]=<span class="tag">a</span>[j+<span class="number">1</span>],<span class="tag">a</span>[j]</span><br><span class="line"></span><br><span class="line"><span class="tag">a</span> = [<span class="number">5</span>,<span class="number">8</span>,<span class="number">6</span>,<span class="number">3</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">5</span>,<span class="number">2</span>,<span class="number">8</span>,<span class="number">6</span>,<span class="number">4</span>]*<span class="number">100</span></span><br><span class="line"><span class="function"><span class="title">bubbleSort</span><span class="params">(a)</span></span></span><br></pre></td></tr></table></figure>
+<!--more-->
+<p>一切都很顺利，程序输出：</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bubbleSort <span class="command">run</span> <span class="property">time</span>: <span class="number">0.35800</span> s</span><br></pre></td></tr></table></figure>
+<p>我又写了一个斐波那契数列来测试：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="decorator">@runTime</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">elif</span> n == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> fib(n-<span class="number">1</span>) + fib(n-<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">fib(<span class="number">10</span>)</span><br></pre></td></tr></table></figure></p>
+<p>发现输出了很多的错误信息：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">fib run <span class="tag">time</span>: <span class="number">0.00000</span> s</span><br><span class="line">fib run <span class="tag">time</span>: <span class="number">0.00000</span> s</span><br><span class="line"></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"H:\pythonProject\装饰器\runtime.py"</span>, line <span class="number">48</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    <span class="function"><span class="title">fib</span><span class="params">(<span class="number">20</span>)</span></span></span><br><span class="line">  File <span class="string">"H:\pythonProject\装饰器\runtime.py"</span>, line <span class="number">9</span>, <span class="keyword">in</span> wrapper</span><br><span class="line">    <span class="function"><span class="title">func</span><span class="params">(*args,**kwargs)</span></span></span><br><span class="line">  File <span class="string">"H:\pythonProject\装饰器\runtime.py"</span>, line <span class="number">46</span>, <span class="keyword">in</span> fib</span><br><span class="line">    return <span class="function"><span class="title">fib</span><span class="params">(n-<span class="number">1</span>)</span></span> + <span class="function"><span class="title">fib</span><span class="params">(n-<span class="number">2</span>)</span></span></span><br><span class="line">  File <span class="string">"H:\pythonProject\装饰器\runtime.py"</span>, line <span class="number">9</span>, <span class="keyword">in</span> wrapper</span><br><span class="line">    <span class="function"><span class="title">func</span><span class="params">(*args,**kwargs)</span></span></span><br><span class="line"></span><br><span class="line">...省去若干行...</span><br><span class="line"></span><br><span class="line">TypeError: unsupported operand <span class="function"><span class="title">type</span><span class="params">(s)</span></span> <span class="keyword">for</span> +: <span class="string">'NoneType'</span> and <span class="string">'NoneType'</span></span><br></pre></td></tr></table></figure>
+<p>为什么会出现这种错误？</p>
+<p>深入理解了装饰器就知道，这里fib = runTime(fib) = wrapper，而fib又是一个递归函数，所以当调用fib(10)的时候，其实执行的是:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">fib</span><span class="params">(<span class="number">10</span>)</span></span>  -&gt;  <span class="function"><span class="title">fib</span><span class="params">(<span class="number">9</span>)</span></span>+<span class="function"><span class="title">fib</span><span class="params">(<span class="number">8</span>)</span></span>  -&gt;  <span class="function"><span class="title">fib</span><span class="params">(<span class="number">8</span>)</span></span>+<span class="function"><span class="title">fib</span><span class="params">(<span class="number">7</span>)</span></span>+<span class="function"><span class="title">fib</span><span class="params">(<span class="number">7</span>)</span></span>+<span class="function"><span class="title">fib</span><span class="params">(<span class="number">6</span>)</span></span> -&gt;.....</span><br><span class="line">-&gt; <span class="function"><span class="title">fib</span><span class="params">(<span class="number">1</span>)</span></span>+<span class="function"><span class="title">fib</span><span class="params">(<span class="number">0</span>)</span></span>......</span><br></pre></td></tr></table></figure>
+<p>那么程序首先肯定会执行一次fib(1)和fib(0)，这时候是OK的，并且由于fib是被装饰的函数，所以fib(1)和fib(0)执行后，会打印出两行：<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fib <span class="command">run</span> <span class="property">time</span>: <span class="number">0.00000</span> s</span><br><span class="line">fib <span class="command">run</span> <span class="property">time</span>: <span class="number">0.00000</span> s</span><br></pre></td></tr></table></figure></p>
+<p>这没有任何问题，但是打印完后，问题就出来了。前面说过，fib等于wrapper，而wrapper函数里没有返回值，即返回值为NoneType，那这下好玩了：<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">fib</span><span class="params">(<span class="number">1</span>)</span></span>+<span class="function"><span class="title">fib</span><span class="params">(<span class="number">0</span>)</span></span> = <span class="function"><span class="title">wrapper</span><span class="params">(<span class="number">1</span>)</span></span>+<span class="function"><span class="title">wrapper</span><span class="params">(<span class="number">0</span>)</span></span>=NoneType+NoneType</span><br></pre></td></tr></table></figure></p>
+<p>行文至此，所有问题都一目了然了吧。</p>
+<p>所以，当你对一个递归函数做装饰的时候，不要忘了递归函数里的每一层调用，都是被装饰过的。这个时候如果你的程序没有问题，那谢天谢地。如果程序有问题，也不必慌张，对付递归函数，其实在函数外面再加个套就行了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="decorator">@runTime</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_fib</span><span class="params">(n)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        <span class="keyword">elif</span> n == <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> _fib(n-<span class="number">1</span>) + _fib(n-<span class="number">2</span>)   </span><br><span class="line">    <span class="keyword">return</span> _fib(n)</span><br><span class="line"></span><br><span class="line">fib(<span class="number">20</span>)</span><br></pre></td></tr></table></figure>
+<p>这个时候仍然是fib = runTime(fib)，只不过fib不再是递归函数，_fib才是，但装不装饰已不关_fib鸟事。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/08/20/KMeans/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          KMeans聚类算法思想与可视化
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/05/22/manifold-learning/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">流形学习-高维数据的降维与可视化</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 wepon
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
