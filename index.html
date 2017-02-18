@@ -175,6 +175,72 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-about" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/03/about/" class="article-date">
+  	<time datetime="2016-07-02T16:00:00.000Z" itemprop="datePublished">2016-07-03</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/03/about/">关于本站</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本站域名 <code>http://wepon.me</code>，<code>wepon</code>是我的网名。站内分享一些机器学习、深度学习、数据挖掘、编程语言相关的文章，大多数是算法原理和实现，以及个人见解。我学识尚浅，文中难免会有错误，如您发现，请邮件告知，同时也欢迎与我交流。</p>
+<p>以下是我的其它网站ID</p>
+<ul>
+<li><p>Github：<a href="https://github.com/wepe">wepe</a>，开源分享了很多代码</p>
+</li>
+<li><p>CSDN：<a href="http://blog.csdn.net/u012162613">wepon</a>, 存放了更多我以前写的博客</p>
+</li>
+<li><p>知乎：<a href="https://www.zhihu.com/people/wepon-huang/activities">wepon</a></p>
+</li>
+<li><p>天池大数据平台：<a href="https://tianchi.shuju.aliyun.com/science/scientistDetail.htm?spm=5176.100170.111.15.mR0GBj&amp;userId=807351409">wepon</a></p>
+</li>
+<li>邮箱：masterwepon@163.com 与 wepon@pku.edu.cn</li>
+</ul>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/07/03/about/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-XGBoost浅入浅出" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -201,10 +267,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>XGBoost风靡Kaggle、天池、DataCastle、Kesci等国内外数据竞赛平台，是比赛夺冠的必备大杀器。我在之前参加过的一些比赛中，着实领略了其威力，也因此取得不少好成绩。如果把数据竞赛比作金庸笔下的武林，那么XGBoost可谓屠龙刀，号令天下，莫敢不从！倚天不出，谁与争锋？</p>
-<blockquote>
-<p>貌似有点扯远了…..因为最近有人说我很文艺，所以允许我开篇装一下逼</p>
-</blockquote>
+        <p>XGBoost风靡Kaggle、天池、DataCastle、Kesci等国内外数据竞赛平台，是比赛夺冠的必备大杀器。我在之前参加过的一些比赛中，着实领略了其威力，也取得不少好成绩。如果把数据竞赛比作金庸笔下的武林，那么XGBoost可谓屠龙刀，号令天下，莫敢不从！倚天不出，谁与争锋？</p>
 <p>XGBoost工具很多人都会用，但却很少有人知道其原理，在我写这篇文章之前，我也是一知半解，前阵子假期就抽空看了一下XGBoost的论文，了解了更多的细节，当然我不敢保证自己的理解完全正确，也有一些细节还没搞明白，特别是XGBoost工具的工程实现方面的内容，读的时候大多略过了。</p>
 <p>这篇文章还在初稿中，本来没打算写的，但是前几天在知乎上看到一个相关的问题<a href="https://www.zhihu.com/question/41354392/answer/98658997" target="_blank" rel="external">“机器学习算法中GBDT和XGBOOST的区别有哪些？”</a>，就手痒回答了一下。这篇文章就先记录一下该问题下我的回答，以及过去我总结的对XGBoost的使用经验。等之后有空了，系统地总结GBDT以及XGBoost。</p>
 <h3 id="xgboost相比传统gbdt有何不同？xgboost为什么快？xgboost如何支持并行？">xgboost相比传统gbdt有何不同？xgboost为什么快？xgboost如何支持并行？</h3><p>看了陈天奇大神的文章和slides，略抒己见，没有面面俱到，不恰当的地方欢迎讨论：</p>
@@ -213,22 +276,22 @@
 <li>传统GBDT在优化时只用到一阶导数信息，xgboost则对代价函数进行了二阶泰勒展开，同时用到了一阶和二阶导数。顺便提一下，xgboost工具支持自定义代价函数，只要函数可一阶和二阶求导。</li>
 <li>xgboost在代价函数里加入了正则项，用于控制模型的复杂度。正则项里包含了树的叶子节点个数、每个叶子节点上输出的score的L2模的平方和。从Bias-variance tradeoff角度来讲，正则项降低了模型的variance，使学习出来的模型更加简单，防止过拟合，这也是xgboost优于传统GBDT的一个特性。</li>
 <li>Shrinkage（缩减），相当于学习速率（xgboost中的eta）。xgboost在进行完一次迭代后，会将叶子节点的权重乘上该系数，主要是为了削弱每棵树的影响，让后面有更大的学习空间。实际应用中，一般把eta设置得小一点，然后迭代次数设置得大一点。（补充：传统GBDT的实现也有学习速率）</li>
-<li><p>列抽样（column subsampling）。xgboost借鉴了随机森林的做法，支持列抽样，不仅能降低过拟合，还能减少计算，这也是xgboost异于传统gbdt的一个特性。</p>
-</li>
-<li><p>对缺失值的处理。对于特征的值有缺失的样本，xgboost可以自动学习出它的分裂方向。</p>
-</li>
-<li><p>xgboost工具支持并行。boosting不是一种串行的结构吗?怎么并行的？注意xgboost的并行不是tree粒度的并行，xgboost也是一次迭代完才能进行下一次迭代的（第t次迭代的代价函数里包含了前面t-1次迭代的预测值）。xgboost的并行是在特征粒度上的。我们知道，决策树的学习最耗时的一个步骤就是对特征的值进行排序（因为要确定最佳分割点），xgboost在训练之前，预先对数据进行了排序，然后保存为block结构，后面的迭代中重复地使用这个结构，大大减小计算量。这个block结构也使得并行成为了可能，在进行节点的分裂时，需要计算每个特征的增益，最终选增益最大的那个特征去做分裂，那么各个特征的增益计算就可以开多线程进行。</p>
-</li>
-<li><p>可并行的近似直方图算法。树节点在进行分裂时，我们需要计算每个特征的每个分割点对应的增益，即用贪心法枚举所有可能的分割点。当数据无法一次载入内存或者在分布式情况下，贪心算法效率就会变得很低，所以xgboost还提出了一种可并行的近似直方图算法，用于高效地生成候选的分割点。</p>
-</li>
+<li>列抽样（column subsampling）。xgboost借鉴了随机森林的做法，支持列抽样，不仅能降低过拟合，还能减少计算，这也是xgboost异于传统gbdt的一个特性。</li>
+</ul>
+<ul>
+<li>对缺失值的处理。对于特征的值有缺失的样本，xgboost可以自动学习出它的分裂方向。</li>
+<li>xgboost工具支持并行。boosting不是一种串行的结构吗?怎么并行的？注意xgboost的并行不是tree粒度的并行，xgboost也是一次迭代完才能进行下一次迭代的（第t次迭代的代价函数里包含了前面t-1次迭代的预测值）。xgboost的并行是在特征粒度上的。我们知道，决策树的学习最耗时的一个步骤就是对特征的值进行排序（因为要确定最佳分割点），xgboost在训练之前，预先对数据进行了排序，然后保存为block结构，后面的迭代中重复地使用这个结构，大大减小计算量。这个block结构也使得并行成为了可能，在进行节点的分裂时，需要计算每个特征的增益，最终选增益最大的那个特征去做分裂，那么各个特征的增益计算就可以开多线程进行。</li>
+</ul>
+<ul>
+<li>可并行的近似直方图算法。树节点在进行分裂时，我们需要计算每个特征的每个分割点对应的增益，即用贪心法枚举所有可能的分割点。当数据无法一次载入内存或者在分布式情况下，贪心算法效率就会变得很低，所以xgboost还提出了一种可并行的近似直方图算法，用于高效地生成候选的分割点。</li>
 </ul>
 <p>=============</p>
 <p>回复 @肖岩在评论里的问题，因为有些公式放正文比较好。评论里讨论的问题的大意是 “xgboost代价函数里加入正则项，是否优于cart的剪枝”。其实陈天奇大神的slides里面也是有提到的，我当一下搬运工。<br>决策树的学习过程就是为了找出最优的决策树，然而从函数空间里所有的决策树中找出最优的决策树是NP-C问题，所以常采用启发式（Heuristic）的方法，如CART里面的优化GINI指数、剪枝、控制树的深度。这些启发式方法的背后往往隐含了一个目标函数，这也是大部分人经常忽视掉的。xgboost的目标函数如下：</p>
-<p><img src="https://pic3.zhimg.com/75894665f9fc8cf514a4e95184138ff6_b.png" alt=""></p>
+<p><img src="http://7u2mpb.com1.z0.glb.clouddn.com/xgb_p1.png" alt=""></p>
 <p>其中正则项控制着模型的复杂度，包括了叶子节点数目T和leaf score的L2模的平方：</p>
-<p><img src="https://pic1.zhimg.com/d0fd8e207ab19a2c6af7a20d23ac7ac4_b.png" alt=""></p>
+<p><img src="http://7u2mpb.com1.z0.glb.clouddn.com/xgb_p2.png" alt=""></p>
 <p>那这个跟剪枝有什么关系呢？？？<br>跳过一系列推导，我们直接来看xgboost中树节点分裂时所采用的公式：</p>
-<p><img src="https://pic3.zhimg.com/7f872e5a5e01f3c50fb0230254b44ff6_b.png" alt=""></p>
+<p><img src="http://7u2mpb.com1.z0.glb.clouddn.com/xgb_p3.png" alt=""></p>
 <p>这个公式形式上跟ID3算法（采用entropy计算增益） 、CART算法（采用gini指数计算增益） 是一致的，都是用分裂后的某种值 减去 分裂前的某种值，从而得到增益。为了限制树的生长，我们可以加入阈值，当增益大于阈值时才让节点分裂，上式中的gamma即阈值，它是正则项里叶子节点数T的系数，所以xgboost在优化目标函数的同时相当于做了预剪枝。另外，上式中还有一个系数lambda，是正则项里leaf score的L2模平方的系数，对leaf score做了平滑，也起到了防止过拟合的作用，这个是传统GBDT里不具备的特性。</p>
 <h3 id="xgboost使用经验总结">xgboost使用经验总结</h3><ul>
 <li>多类别分类时，类别需要从0开始编码</li>
@@ -262,70 +325,6 @@
 	</div>
 
 
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-data-preprocessing" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/02/03/data-preprocessing/" class="article-date">
-  	<time datetime="2016-02-02T16:00:00.000Z" itemprop="datePublished">2016-02-03</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/03/data-preprocessing/">数据预处理</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>常见的数据预处理方法，以下通过sklearn的preprocessing模块来介绍;</p>
-<h3 id="1-_标准化（Standardization_or_Mean_Removal_and_Variance_Scaling)">1. 标准化（Standardization or Mean Removal and Variance Scaling)</h3><p>变换后各维特征有0均值，单位方差。也叫z-score规范化（零均值规范化）。计算方式是将特征值减去均值，除以标准差。</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn<span class="class">.preprocessing</span><span class="class">.scale</span>(X)</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/二值化/">二值化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/标准化/">标准化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/类别特征转化/">类别特征转化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/规范化/">规范化</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/机器学习/">机器学习</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/02/03/data-preprocessing/#more">more >></a>
-        </p>
       
       <div class="clearfix"></div>
     </div>
@@ -454,6 +453,70 @@
       
         <p class="article-more-link">
           <a  href="/2015/08/20/KMeans/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-data-preprocessing" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/08/09/data-preprocessing/" class="article-date">
+  	<time datetime="2015-08-08T16:00:00.000Z" itemprop="datePublished">2015-08-09</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/08/09/data-preprocessing/">数据预处理</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>常见的数据预处理方法，以下通过sklearn的preprocessing模块来介绍;</p>
+<h3 id="1-_标准化（Standardization_or_Mean_Removal_and_Variance_Scaling)">1. 标准化（Standardization or Mean Removal and Variance Scaling)</h3><p>变换后各维特征有0均值，单位方差。也叫z-score规范化（零均值规范化）。计算方式是将特征值减去均值，除以标准差。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn<span class="class">.preprocessing</span><span class="class">.scale</span>(X)</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/二值化/">二值化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/标准化/">标准化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/类别特征转化/">类别特征转化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/规范化/">规范化</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/机器学习/">机器学习</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/08/09/data-preprocessing/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -854,6 +917,71 @@
 
 
   
+    <article id="post-正则化方法：L1和L2 regularization、数据集扩增、dropout" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/03/14/正则化方法：L1和L2 regularization、数据集扩增、dropout/" class="article-date">
+  	<time datetime="2015-03-13T16:00:00.000Z" itemprop="datePublished">2015-03-14</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/14/正则化方法：L1和L2 regularization、数据集扩增、dropout/">正则化方法：L1和L2 regularization、数据集扩增、dropout</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文是<a href="http://blog.csdn.net/u012162613/article/details/44220115">《Neural networks and deep learning》概览</a> 中第三章的一部分，讲机器学习/深度学习算法中常用的正则化方法。（本文会不断补充）</p>
+<hr>
+<h2 id="正则化方法：防止过拟合，提高泛化能力"><strong>正则化方法：防止过拟合，提高泛化能力</strong></h2><p>在训练数据不够多时，或者overtraining时，常常会导致overfitting（过拟合）。其直观的表现如下图所示，随着训练过程的进行，模型复杂度增加，在training data上的error渐渐减小，但是在验证集上的error却反而渐渐增大——因为训练出来的网络过拟合了训练集，对训练集外的数据却不work。</p>
+<p><img src="http://i.imgur.com/OhX9eFQ.jpg" alt=""></p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/L1/">L1</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/L2-regularization/">L2 regularization</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dropout/">dropout</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/正则化/">正则化</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/机器学习/">机器学习</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/03/14/正则化方法：L1和L2 regularization、数据集扩增、dropout/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-机器学习算法中如何选取超参数：学习速率、正则项系数、minibatch size" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -906,71 +1034,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/03/14/机器学习算法中如何选取超参数：学习速率、正则项系数、minibatch size/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-正则化方法：L1和L2 regularization、数据集扩增、dropout" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/03/14/正则化方法：L1和L2 regularization、数据集扩增、dropout/" class="article-date">
-  	<time datetime="2015-03-13T16:00:00.000Z" itemprop="datePublished">2015-03-14</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/03/14/正则化方法：L1和L2 regularization、数据集扩增、dropout/">正则化方法：L1和L2 regularization、数据集扩增、dropout</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文是<a href="http://blog.csdn.net/u012162613/article/details/44220115">《Neural networks and deep learning》概览</a> 中第三章的一部分，讲机器学习/深度学习算法中常用的正则化方法。（本文会不断补充）</p>
-<hr>
-<h2 id="正则化方法：防止过拟合，提高泛化能力"><strong>正则化方法：防止过拟合，提高泛化能力</strong></h2><p>在训练数据不够多时，或者overtraining时，常常会导致overfitting（过拟合）。其直观的表现如下图所示，随着训练过程的进行，模型复杂度增加，在training data上的error渐渐减小，但是在验证集上的error却反而渐渐增大——因为训练出来的网络过拟合了训练集，对训练集外的数据却不work。</p>
-<p><img src="http://i.imgur.com/OhX9eFQ.jpg" alt=""></p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/L1/">L1</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/L2-regularization/">L2 regularization</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dropout/">dropout</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/正则化/">正则化</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/机器学习/">机器学习</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/03/14/正则化方法：L1和L2 regularization、数据集扩增、dropout/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -1190,312 +1253,13 @@
 
 
   
-    <article id="post-《Python核心编程》笔记  Python对象" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/03/04/《Python核心编程》笔记  Python对象/" class="article-date">
-  	<time datetime="2015-03-03T16:00:00.000Z" itemprop="datePublished">2015-03-04</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/03/04/《Python核心编程》笔记  Python对象/">Python对象</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="1、Python对象">1、Python对象</h3><p>Python使用对象模型来存储数据，构造任何类型的值都是一个对象。所有的对象都有三个特性：</p>
-<ul>
-<li>身份，可通过内建函数id()查看，这个值即该对象的内存地址。</li>
-<li>类型，可通过内建函数type()查看。</li>
-<li>值，对象表示的数据项。</li>
-</ul>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="prompt">&gt;&gt;</span>&gt; p = <span class="number">12</span></span><br><span class="line"><span class="prompt">&gt;&gt;</span>&gt; id(p)</span><br><span class="line"><span class="number">31108092</span></span><br><span class="line"><span class="prompt">&gt;&gt;</span>&gt; type(p)</span><br><span class="line">&lt;type <span class="string">'int'</span>&gt;</span><br><span class="line"><span class="prompt">&gt;&gt;</span>&gt; p</span><br><span class="line"><span class="number">12</span></span><br><span class="line"><span class="prompt">&gt;&gt;</span>&gt;</span><br></pre></td></tr></table></figure>
-<h3 id="2、标准类型">2、标准类型</h3><p>整型Integer，长整型Long integer，浮点型float，复数型complex number，布尔型bool，字符串string，列表list，元组tuple，字典dictionary。</p>
-<h3 id="3、其他内建类型">3、其他内建类型</h3><ul>
-<li><p>type类型对象</p>
-<p>  type类型本身就是一个对象，它的类型为‘type’。</p>
-</li>
-</ul>
-<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; <span class="typedef"><span class="keyword">type</span><span class="container">(1)</span></span></span><br><span class="line">&lt;<span class="typedef"><span class="keyword">type</span> 'int'&gt;</span></span><br><span class="line">&gt;&gt;&gt; <span class="typedef"><span class="keyword">type</span><span class="container">(<span class="title">type</span>(1)</span>)</span></span><br><span class="line">&lt;<span class="typedef"><span class="keyword">type</span> '<span class="keyword">type</span>'&gt;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>None——Python的Null对象</p>
-<p>  Python有一个特殊的类型，称作Null对象或者NoneType，它只有一个值：None，None的布尔值为False。</p>
-</li>
-<li><p>文件</p>
-</li>
-<li>集合</li>
-<li>函数/方法</li>
-<li>模块</li>
-<li>类</li>
-</ul>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Python/">Python</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/03/04/《Python核心编程》笔记  Python对象/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-《Python核心编程》数字类型" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/03/03/《Python核心编程》数字类型/" class="article-date">
-  	<time datetime="2015-03-02T16:00:00.000Z" itemprop="datePublished">2015-03-03</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/03/03/《Python核心编程》数字类型/">《Python核心编程》数字类型</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="1、数字类型简介">1、数字类型简介</h2><ul>
-<li>Python中数字类型包括：整型、长整型、布尔型、双精度浮点型、十进制浮点型、复数。这些数字类型都是不可变类型，也就是说，改变了数字的值会生成新的对象。</li>
-<li>在Python中删除数字对象，可以用语句：del aInt,aLong,aFloat,aComplex</li>
-</ul>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Python/">Python</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/03/03/《Python核心编程》数字类型/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-《Python核心编程》笔记  基础" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/02/27/《Python核心编程》笔记  基础/" class="article-date">
-  	<time datetime="2015-02-26T16:00:00.000Z" itemprop="datePublished">2015-02-27</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/02/27/《Python核心编程》笔记  基础/">《Python核心编程》笔记 基础</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>春节终于over了，回归充实的学习研究生活。打开久违的CSDN博客，看到官方推送的 <a href="http://blog.csdn.net/csdnproduct/article/details/43561659">『博客Markdown编辑器上线啦』</a>，让我顿时有了写作的欲望，真是程序员的福利。之前阅读各种文章书籍，都是用MarkDownPad做的笔记，喜欢以及习惯于MarkDown简洁的语法。</p>
-<p>总之各种方便。为了试试效果，将以前阅读《Python核心编程》的手记整理发上来，也当温习一遍。</p>
-<h2 id="第三章_Python基础">第三章 Python基础</h2><h3 id="1、语句和语法">1、语句和语法</h3><ul>
-<li><p>注释</p>
-<p>  Python中注释用符号“#”，也可以用三引号：’’’ 注释内容 ‘’’</p>
-</li>
-</ul>
-<ul>
-<li><p>继续</p>
-<p>  过长的语句，可以用反斜杠\,将一行分解为几行：</p>
-</li>
-</ul>
-<pre><code><span class="comment"><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="literal">a</span>==<span class="number">1</span> <span class="literal">and</span> \</span><br><span class="line"><span class="label">       b==0 :</span></span><br></pre></td></tr></table></figure></span>
-</code></pre><ul>
-<li><p>Python缩进风格</p>
-<p>  Pyhton使用缩进来分隔代码组，缩进可以为空格、制表符Tab（另：推荐使用4个空格来缩进，并且尽量不要用tab键，因为不同平台tab键的代表的空白宽度不一样。）</p>
-</li>
-<li><p>多个语句写在同一行上</p>
-<p>  把多个语句写在同一行上是不推荐的，因为可读性会大大降低。如果非要这么做，也是允许的。</p>
-  <figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor"><span class="keyword">import</span> sys;</span> x  = <span class="string">'foo'</span>; sys.stdout.write(x)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>模块</p>
-<p>  通过import导入</p>
-</li>
-</ul>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Python/">Python</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/02/27/《Python核心编程》笔记  基础/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-《Python核心编程 》笔记-快速入门" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/02/27/《Python核心编程 》笔记-快速入门/" class="article-date">
-  	<time datetime="2015-02-26T16:00:00.000Z" itemprop="datePublished">2015-02-27</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/02/27/《Python核心编程 》笔记-快速入门/">《Python核心编程 》笔记-快速入门</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>春节终于over了，回归充实的学习研究生活。打开久违的CSDN博客，看到官方推送的 <a href="http://blog.csdn.net/csdnproduct/article/details/43561659">『博客Markdown编辑器上线啦』</a>，让我顿时有了写作的欲望，真是程序员的福利。之前阅读各种文章书籍，都是用MarkDownPad做的笔记，喜欢以及习惯于MarkDown简洁的语法。</p>
-<p>总之各种方便。为了试试效果，将以前阅读《Python核心编程》的手记整理发上来，也当温习一遍。</p>
-<h2 id="第二章_快速入门">第二章 快速入门</h2><ul>
-<li>print语句中使用字符串格式操作符，实现字符替换功能。</li>
-</ul>
-<pre><code><span class="xml"><span class="comment"><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> <span class="string">"<span class="variable">%s</span> is <span class="variable">%d</span>"</span> <span class="variable">%(</span><span class="string">"one"</span>,<span class="number">1</span>)</span><br></pre></td></tr></table></figure></span>
-</span><span class="perl">
-<span class="variable">%s</span>、<span class="variable">%d</span>、<span class="variable">%f</span>分别用字符串、整型、浮点类型数据来替换。</span><span class="xml"></span>
-</code></pre><ul>
-<li><p>print语句重定向</p>
-  <figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">logfile = <span class="keyword">open</span>(<span class="string">'/tmp/mylog.txt'</span>,<span class="string">'a'</span>)</span><br><span class="line"><span class="keyword">print</span> &amp;<span class="keyword">gt</span>;&amp;<span class="keyword">gt</span>; logfile,<span class="string">'something....'</span></span><br><span class="line">logfile.<span class="keyword">close</span>()</span><br></pre></td></tr></table></figure>
-<p>  符号&gt;&gt;是用来重定向的，上面的代码将输出添加到日志文件mylog.txt中。</p>
-</li>
-<li><p>raw_input内建函数，读取键盘输入，返回值类型是字符串。</p>
-  <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="function"><span class="title">raw_input</span><span class="params">(<span class="string">'some tips：'</span>)</span></span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Python/">Python</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/02/27/《Python核心编程 》笔记-快速入门/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
   
 </div>
       <footer id="footer">
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2016 wepon
+    		&copy; 2017 wepon
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
